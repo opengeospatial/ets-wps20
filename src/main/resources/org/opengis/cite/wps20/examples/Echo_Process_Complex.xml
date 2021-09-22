@@ -1,0 +1,17 @@
+<wps:Execute
+    xmlns:wps="http://www.opengis.net/wps/2.0"
+    xmlns:ows="http://www.opengis.net/ows/2.0"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd"
+	service="WPS" version="2.0.0" response="raw" mode="sync">
+    <ows:Identifier>example.id</ows:Identifier>
+	<wps:Input id="example.input.id">
+        <wps:Data>
+            <wps:ComplexData>
+                <testElement>hello_complex</testElement>
+            </wps:ComplexData>
+        </wps:Data>
+    </wps:Input>
+    <wps:Output id="example.output.id" transmission="value" />
+</wps:Execute>
