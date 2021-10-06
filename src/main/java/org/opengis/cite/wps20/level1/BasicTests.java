@@ -1,5 +1,7 @@
 package org.opengis.cite.wps20.level1;
 
+import static org.testng.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +61,11 @@ import org.opengis.cite.wps20.util.*;
 
 public class BasicTests extends CommonFixture {	
 	
+	String GET_CAPABILITIES_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/GetCapabilities.xml";
+	String DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/DescribeProcess.xml";
+	String LITERAL_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Literal.xml";
+	String COMPLEX_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Complex.xml";
+	
 	/**
 	 * A.5.0. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML
 	 * Flow of Test Description: Send a valid XML Execute request to the server under test, setting the “mode” attribute to “sync”. Verify that a valid Execute wps:Result is returned. 
@@ -67,8 +74,6 @@ public class BasicTests extends CommonFixture {
 	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.0. Verify that the server can handle echo process")
 	public void ValidEchoProcess() throws Exception { 
 		String SERVICE_URL = this.ServiceUrl.toString();
-		String LITERAL_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Literal.xml";
-		String COMPLEX_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Complex.xml";
 		
 		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
 		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
@@ -271,10 +276,11 @@ fails. Overall test passes if all individual tests pass.
 	 */
 	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.9. Verify that the server can handle GetCapabilities requests via POST/XML.")
 	public void ValidGetCapabilitiesViaPOSTXML() throws IOException,URISyntaxException, SAXException { 
-		String SERVICE_URL 		= this.ServiceUrl.toString(); 		
-		Document GCDocument		= this.GcXmlUri;
-		String GCRXmlString 	= GetContentFromPOSTXMLRequest(SERVICE_URL, GCDocument);
-		Document GCRDocument 	= TransformXMLStringToXMLDocument(GCRXmlString);
+		String SERVICE_URL = this.ServiceUrl.toString();
+		URI uriGetCapabilitiesRequestTemplate = BasicTests.class.getResource(GET_CAPABILITIES_REQUEST_TEMPLATE_PATH).toURI();
+		Document GCDocument = URIUtils.parseURI(uriGetCapabilitiesRequestTemplate);
+		String GCRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, GCDocument);
+		Document GCRDocument = TransformXMLStringToXMLDocument(GCRXmlString);
 		
 		Boolean GCP_Flag = (GCRDocument.getElementsByTagName("wps:Capabilities").getLength() > 0) ? true : false;
 		if (GCP_Flag) {
@@ -296,10 +302,13 @@ fails. Overall test passes if all individual tests pass.
 	 */
 	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.10. Verify that the server can handle DescribeProcess requests via POST/XML.")
 	public void ValidDescribeProcessViaPOSTXML() throws IOException,URISyntaxException, SAXException { 
-		String SERVICE_URL 		= this.ServiceUrl.toString(); 		
-		Document DPDocument		= this.DpXmlUri;
-		String DPRXmlString 	= GetContentFromPOSTXMLRequest(SERVICE_URL, DPDocument);
-		Document DPRDocument 	= TransformXMLStringToXMLDocument(DPRXmlString);
+		String SERVICE_URL = this.ServiceUrl.toString();
+		URI uriDescribeProcessRequestTemplate = BasicTests.class.getResource(DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH).toURI();
+		Document DPDocument = URIUtils.parseURI(uriDescribeProcessRequestTemplate);
+		DPDocument.getElementsByTagName("ows:Identifier").item(0).setTextContent(this.EchoProcessId);;
+		
+		String DPRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, DPDocument);
+		Document DPRDocument = TransformXMLStringToXMLDocument(DPRXmlString);
 		
 		Boolean DPP_Flag = (DPRDocument.getElementsByTagName("wps:ProcessOfferings").getLength() > 0) ? true : false;
 		if (DPP_Flag) {
@@ -310,6 +319,107 @@ fails. Overall test passes if all individual tests pass.
 			String msg = "Invalid DescribeProcess via POST/XML for WPS 2.0"; 
 			Assert.assertTrue(DPP_Flag, msg); 
 		}
+	}
+	
+	/**
+	 * A.5.11. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML
+	 * Flow of Test Description: Send a valid XML Execute request to the server under test, setting the “mode” attribute to “sync”. Verify that a valid Execute wps:Result is returned. 
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.11. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML.")
+	public void ValidSyncExcecuteViaPOSTXML() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document literalDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		
+		//Process Literal Request
+		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
+		
+		//Response document
+		Element executeElement = (Element) literalDocument.getElementsByTagName("wps:Execute").item(0);
+		executeElement.setAttribute("mode", "sync");
+		executeElement.setAttribute("response", "document");
+		try {
+			prettyPrint(literalDocument);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String respDocResult = GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+		Document respDocResultDocument = TransformXMLStringToXMLDocument(respDocResult);
+		boolean respDocFlag = respDocResultDocument.getElementsByTagName("wps:Result").getLength() > 0;
+		String msg = "Invalid SyncExecute via POST/XML for WPS 2.0";
+		assertTrue(respDocFlag, msg);
+		
+		//Raw data output
+		executeElement.setAttribute("response", "raw");
+		try {
+			prettyPrint(literalDocument);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String respRawResult = GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+		boolean respRawFlag = respRawResult.equals("hello_literal");
+		assertTrue(respRawFlag, msg);
+	}
+	
+	public void ProcessEchoProcessLiteralDataRequest(String SERVICE_URL, Document SEPDocument) {
+		//Get the processid from user and replace the processid in the template xml request file
+		String ECHO_PROCESS_ID = this.EchoProcessId;
+
+		//Parse the input id and output id in DescribeProcess
+		Map<String,Object> DP_Parameters = new LinkedHashMap<>();
+		DP_Parameters.put("Service", "WPS");
+		DP_Parameters.put("Version", "2.0.0");
+		DP_Parameters.put("Request", "DescribeProcess");
+		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
+		String responseDescribeProcess = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
+		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
+
+		//get input id
+		NodeList inputList = responseDescribeProcessDocument.getElementsByTagName("wps:Input");
+		String literalInputId = "", literalOutputId = "", complexInputId = "", complexOutputId = "";
+		for (int i = 0; i < inputList.getLength(); i++) {
+			Element element = (Element) inputList.item(i);
+			Element literalInputElement = (Element) element.getElementsByTagName("ns:LiteralData").item(0);
+			Element complexInputElement = (Element) element.getElementsByTagName("ns:ComplexData").item(0);
+			String Id = element.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			if(literalInputElement != null) {
+				literalInputId = Id;
+			}
+			else if(complexInputElement != null) {
+				complexInputId = Id;
+			}
+		}
+
+		//get output id
+		NodeList outputList = responseDescribeProcessDocument.getElementsByTagName("wps:Output");
+		for (int i = 0; i < outputList.getLength(); i++) {
+			Element element = (Element) outputList.item(i);
+			Element literalOutputElement = (Element) element.getElementsByTagName("ns:LiteralData").item(0);
+			Element complexOutputElement = (Element) element.getElementsByTagName("ns:ComplexData").item(0);
+			String Id = element.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			if(literalOutputElement != null) {
+				literalOutputId = Id;
+			}
+			else if(complexOutputElement != null) {
+				complexOutputId = Id;
+			}
+		}
+
+		//Test LiteralData
+		Element requestInputElement = (Element) SEPDocument.getElementsByTagName("wps:Input").item(0);
+		Element requestOutputElement = (Element) SEPDocument.getElementsByTagName("wps:Output").item(0);
+		Element requestIdElement = (Element) SEPDocument.getElementsByTagName("ows:Identifier").item(0);
+		//replace id
+		requestIdElement.setTextContent(ECHO_PROCESS_ID);
+		requestInputElement.setAttribute("id", literalInputId);
+		requestOutputElement.setAttribute("id", literalOutputId);
+		
 	}
 	
 	/**

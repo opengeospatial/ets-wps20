@@ -29,17 +29,7 @@ public enum SuiteAttribute {
     
     SERVICE_URL("SERVICE_URL", URI.class),
     
-    ECHO_PROCESS_ID("ECHO_PROCESS_ID", String.class), 
-	
-	GC_XML_URI("GC_XML_URI", Document.class),
-	
-	DP_XML_URI("DP_XML_URI", Document.class),
-	
-	EX_SNC_XML_URI("EX_SNC_XML_URI", Document.class),
-	
-	EX_ANC_XML_URI("EX_ANC_XML_URI", Document.class),
-	
-	EX_ATO_XML_URI("EX_ATO_XML_URI", Document.class);
+    ECHO_PROCESS_ID("ECHO_PROCESS_ID", String.class);
 	
     private final Class attrType;
     private final String attrName;

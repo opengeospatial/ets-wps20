@@ -97,7 +97,8 @@ public class SuiteFixtureListener implements ISuiteListener {
 		String EchoProcessIdRefString = params.get(TestRunArg.ECHO_PROCESS_ID.toString());
 		suite.setAttribute(SuiteAttribute.ECHO_PROCESS_ID.getName(), EchoProcessIdRefString); 
 		
-		/* Define GC_XML_URI parameter */
+		/*
+		//Define GC_XML_URI parameter
 		String GcXmlUriParam 	= params.get(TestRunArg.GC_XML_URI.toString());
         URI GcXmlUriRef 		= URI.create(GcXmlUriParam.trim());
         File GcXmlUriFile 		= null;
@@ -114,7 +115,7 @@ public class SuiteFixtureListener implements ISuiteListener {
         }
         suite.setAttribute(SuiteAttribute.GC_XML_URI.getName(), GcXmlUriDoc);
         
-        /* Define DP_XML_URI parameter */
+        //Define DP_XML_URI parameter
 		String DpXmlUriParam 	= params.get(TestRunArg.DP_XML_URI.toString());
         URI DpXmlUriRef 		= URI.create(DpXmlUriParam.trim());
         File DpXmlUriFile 		= null;
@@ -130,57 +131,8 @@ public class SuiteFixtureListener implements ISuiteListener {
             throw new RuntimeException("Failed to parse resource retrieved from " + DpXmlUriRef, ex);
         }
         suite.setAttribute(SuiteAttribute.DP_XML_URI.getName(), DpXmlUriDoc);
+        */
         
-        /* Define EX_SNC_XML_URI parameter */
-		String ExSncXmlUriParam 	= params.get(TestRunArg.EX_SNC_XML_URI.toString());
-        URI ExSncXmlUriRef 			= URI.create(ExSncXmlUriParam.trim());
-        File ExSncXmlUriFile 		= null;
-        try {
-        	ExSncXmlUriFile = URIUtils.dereferenceURI(ExSncXmlUriRef);
-        }catch (Exception ex) {
-            throw new RuntimeException("Failed to dereference resource located at " + ExSncXmlUriRef, ex);        	
-        }
-        Document ExSncXmlUriDoc = null;
-        try {
-        	ExSncXmlUriDoc = URIUtils.parseURI(ExSncXmlUriFile.toURI());
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to parse resource retrieved from " + ExSncXmlUriRef, ex);
-        }
-        suite.setAttribute(SuiteAttribute.EX_SNC_XML_URI.getName(), ExSncXmlUriDoc);
-        
-        /* Define EX_ANC_XML_URI parameter */
-		String ExAncXmlUriParam 	= params.get(TestRunArg.EX_ANC_XML_URI.toString());
-        URI ExAncXmlUriRef 			= URI.create(ExAncXmlUriParam.trim());
-        File ExAncXmlUriFile 		= null;
-        try {
-        	ExAncXmlUriFile = URIUtils.dereferenceURI(ExAncXmlUriRef);
-        }catch (Exception ex) {
-            throw new RuntimeException("Failed to dereference resource located at " + ExAncXmlUriRef, ex);        	
-        }
-        Document ExAncXmlUriDoc = null;
-        try {
-        	ExAncXmlUriDoc = URIUtils.parseURI(ExAncXmlUriFile.toURI());
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to parse resource retrieved from " + ExAncXmlUriRef, ex);
-        }
-        suite.setAttribute(SuiteAttribute.EX_ANC_XML_URI.getName(), ExAncXmlUriDoc);
-        
-        /* Define EX_ATO_XML_URI parameter */
-		String ExAtoXmlUriParam 	= params.get(TestRunArg.EX_ATO_XML_URI.toString());
-        URI ExAtoXmlUriRef 			= URI.create(ExAtoXmlUriParam.trim());
-        File ExAtoXmlUriFile 		= null;
-        try {
-        	ExAtoXmlUriFile = URIUtils.dereferenceURI(ExAtoXmlUriRef);
-        }catch (Exception ex) {
-            throw new RuntimeException("Failed to dereference resource located at " + ExAtoXmlUriRef, ex);        	
-        }
-        Document ExAtoXmlUriDoc = null;
-        try {
-        	ExAtoXmlUriDoc = URIUtils.parseURI(ExAtoXmlUriFile.toURI());
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to parse resource retrieved from " + ExAtoXmlUriRef, ex);
-        }
-        suite.setAttribute(SuiteAttribute.EX_ATO_XML_URI.getName(), ExAtoXmlUriDoc);
         
         if (TestSuiteLogger.isLoggable(Level.FINE)) {
             StringBuilder logMsg = new StringBuilder("Parsed resource retrieved from ");
