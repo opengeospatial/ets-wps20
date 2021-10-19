@@ -3,6 +3,7 @@ package org.opengis.cite.wps20.level1;
 import static org.testng.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -324,12 +325,10 @@ fails. Overall test passes if all individual tests pass.
 	/**
 	 * A.5.11. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML
 	 * Flow of Test Description: Send a valid XML Execute request to the server under test, setting the “mode” attribute to “sync”. Verify that a valid Execute wps:Result is returned. 
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws SAXException 
+	 * @throws Exception 
 	 */
 	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.11. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML.")
-	public void ValidSyncExcecuteViaPOSTXML() throws IOException,URISyntaxException, SAXException { 
+	public void ValidSyncExcecuteViaPOSTXML() throws Exception { 
 		String SERVICE_URL = this.ServiceUrl.toString();
 		
 		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
@@ -348,9 +347,24 @@ fails. Overall test passes if all individual tests pass.
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String respDocResult = GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
-		Document respDocResultDocument = TransformXMLStringToXMLDocument(respDocResult);
-		boolean respDocFlag = respDocResultDocument.getElementsByTagName("wps:Result").getLength() > 0;
+		
+		//status code is 200 response validation
+		HttpURLConnection conn = GetConnection(SERVICE_URL);
+        conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/xml");
+		conn.setDoOutput(true);
+		
+		DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
+		String xml = TransformXMLDocumentToXMLString(literalDocument);
+		outputStream.writeBytes(xml);
+		outputStream.flush();
+		outputStream.close();
+		
+		int responseCode = conn.getResponseCode();
+		boolean respDocFlag = (responseCode == HttpURLConnection.HTTP_OK);
+		//String respDocResult = GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+		//Document respDocResultDocument = TransformXMLStringToXMLDocument(respDocResult);
+		//boolean respDocFlag = respDocResultDocument.getElementsByTagName("wps:Result").getLength() > 0;
 		String msg = "Invalid SyncExecute via POST/XML for WPS 2.0";
 		assertTrue(respDocFlag, msg);
 		
@@ -423,6 +437,65 @@ fails. Overall test passes if all individual tests pass.
 	}
 	
 	/**
+	 * A.5.12. Verify that the server can handle the execution mode 'asynchronous' requested via POST/XML
+	 * Flow of Test Description: Flow of Test Description: Send a valid XML Execute request to the server under test, setting the “mode” attribute to “async”. Verify that a valid Execute wps:Result is returned.
+	 * @throws Exception 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.12. Verify that the server can handle the execution mode 'asynchronous' requested via POST/XML.")
+	public void ValidAsyncExcecuteViaPOSTXML() throws Exception { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document literalDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		
+		//Process Literal Request
+		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
+		
+		//Response document
+		Element executeElement = (Element) literalDocument.getElementsByTagName("wps:Execute").item(0);
+		executeElement.setAttribute("mode", "async");
+		executeElement.setAttribute("response", "document");
+		try {
+			prettyPrint(literalDocument);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//status code is 200 response validation
+		HttpURLConnection conn = GetConnection(SERVICE_URL);
+        conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/xml");
+		conn.setDoOutput(true);
+		
+		DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
+		String xml = TransformXMLDocumentToXMLString(literalDocument);
+		outputStream.writeBytes(xml);
+		outputStream.flush();
+		outputStream.close();
+		
+		int responseCode = conn.getResponseCode();
+		StringBuilder builder = new StringBuilder();
+		// read response
+		BufferedReader in;
+		if(responseCode > 299)
+		    in = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+		else
+		    in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		
+		String str;
+		while ((str = in.readLine()) != null) {
+			builder.append(str);
+		}
+		in.close();
+		System.out.println(builder.toString());
+		
+		boolean respDocFlag = (responseCode == HttpURLConnection.HTTP_OK);
+		String msg = "Invalid AsyncExecute via POST/XML for WPS 2.0";
+		assertTrue(respDocFlag, msg);
+	}
+	
+	/**
 	 * Description: Identify that a XML document is valid with XSD Template or not
 	 * @param xmlString
 	 * @param xsdPath
@@ -478,17 +551,26 @@ fails. Overall test passes if all individual tests pass.
         return null;
     }
 	
-	/**
+    /**
 	 * @param xmlDoc
 	 * @throws Exception
 	 */
-	private static void prettyPrint(Document xmlDoc) throws Exception {
+	private static String TransformXMLDocumentToXMLString(Document xmlDoc) throws Exception{
 		Transformer tf = TransformerFactory.newInstance().newTransformer();
 		tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		tf.setOutputProperty(OutputKeys.INDENT, "yes");
 		Writer out = new StringWriter();
 		tf.transform(new DOMSource(xmlDoc), new StreamResult(out));
-		System.out.println(out.toString());
+		return out.toString();
+	}
+	
+	/**
+	 * @param xmlDoc
+	 * @throws Exception
+	 */
+	private static void prettyPrint(Document xmlDoc) throws Exception {
+		String str = TransformXMLDocumentToXMLString(xmlDoc);
+		System.out.println(str);
 	}
     
 	/**
@@ -598,5 +680,10 @@ fails. Overall test passes if all individual tests pass.
 			throw new RuntimeException("Exception while calling URL:" + any_url, e);
 		} 
 		return sb.toString();
+	}
+	
+	private HttpURLConnection GetConnection(String serviceURL) throws IOException {
+		URL urlObj = new URL(serviceURL);
+		return (HttpURLConnection) urlObj.openConnection();
 	}
 }
