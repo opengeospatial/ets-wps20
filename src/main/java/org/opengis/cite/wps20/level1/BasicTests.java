@@ -92,13 +92,13 @@ public class BasicTests extends CommonFixture {
 		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
 		
 		//get input id
-		NodeList inputList = responseDescribeProcessDocument.getElementsByTagName("wps:Input");
+		NodeList inputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input");
 		String literalInputId = "", literalOutputId = "", complexInputId = "", complexOutputId = "";
 		for (int i = 0; i < inputList.getLength(); i++) {
 			Element element = (Element) inputList.item(i);
-			Element literalInputElement = (Element) element.getElementsByTagName("ns:LiteralData").item(0);
-			Element complexInputElement = (Element) element.getElementsByTagName("ns:ComplexData").item(0);
-			String Id = element.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			Element literalInputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
+			Element complexInputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
+			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).getTextContent();
 			if(literalInputElement != null) {
 				literalInputId = Id;
 			}
@@ -108,12 +108,12 @@ public class BasicTests extends CommonFixture {
 		}
 		
 		//get output id
-		NodeList outputList = responseDescribeProcessDocument.getElementsByTagName("wps:Output");
+		NodeList outputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Output");
 		for (int i = 0; i < outputList.getLength(); i++) {
 			Element element = (Element) outputList.item(i);
-			Element literalOutputElement = (Element) element.getElementsByTagName("ns:LiteralData").item(0);
-			Element complexOutputElement = (Element) element.getElementsByTagName("ns:ComplexData").item(0);
-			String Id = element.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			Element literalOutputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
+			Element complexOutputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
+			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).getTextContent();
 			if(literalOutputElement != null) {
 				literalOutputId = Id;
 			}
@@ -123,9 +123,9 @@ public class BasicTests extends CommonFixture {
 		}
 		
 		//Test LiteralData
-		Element requestInputElement = (Element) SEPDocument.getElementsByTagName("wps:Input").item(0);
-		Element requestOutputElement = (Element) SEPDocument.getElementsByTagName("wps:Output").item(0);
-		Element requestIdElement = (Element) SEPDocument.getElementsByTagName("ows:Identifier").item(0);
+		Element requestInputElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input").item(0);
+		Element requestOutputElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Output").item(0);
+		Element requestIdElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0);
 		//replace id
 		requestIdElement.setTextContent(ECHO_PROCESS_ID);
 		requestInputElement.setAttribute("id", literalInputId);
@@ -141,9 +141,9 @@ public class BasicTests extends CommonFixture {
 		//Test ComplexData
 		URI uriComplexLiteralRequestTemplate = BasicTests.class.getResource(COMPLEX_REQUEST_TEMPLATE_PATH).toURI();
 		SEPDocument = URIUtils.parseURI(uriComplexLiteralRequestTemplate);
-		requestInputElement = (Element) SEPDocument.getElementsByTagName("wps:Input").item(0);
-		requestOutputElement = (Element) SEPDocument.getElementsByTagName("wps:Output").item(0);
-		requestIdElement = (Element) SEPDocument.getElementsByTagName("ows:Identifier").item(0);
+		requestInputElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input").item(0);
+		requestOutputElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Output").item(0);
+		requestIdElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0);
 		//replace id
 		requestIdElement.setTextContent(ECHO_PROCESS_ID);
 		requestInputElement.setAttribute("id", complexInputId);
@@ -244,13 +244,13 @@ fails. Overall test passes if all individual tests pass.
 		DP_Parameters.put("Identifier", "ALL");
 		String DPXmlString 	= GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
 		Document DPDocument = TransformXMLStringToXMLDocument(DPXmlString);
-		NodeList DPList 	= DPDocument.getElementsByTagName("wps:Process");
+		NodeList DPList 	= DPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Process");
 		
 		Boolean UI_Flag 		= true;
 		Set<String> PNameList 	= new HashSet<>();
         for (int i = 0; i < DPList.getLength(); i++) {
         	Element PDocument 	= (Element) DPList.item(i);
-			String PName 		= PDocument.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			String PName 		= PDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).getTextContent();
             if (PNameList.add(PName) == false) {
             	UI_Flag = false;
             	break;
@@ -283,7 +283,7 @@ fails. Overall test passes if all individual tests pass.
 		String GCRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, GCDocument);
 		Document GCRDocument = TransformXMLStringToXMLDocument(GCRXmlString);
 		
-		Boolean GCP_Flag = (GCRDocument.getElementsByTagName("wps:Capabilities").getLength() > 0) ? true : false;
+		Boolean GCP_Flag = (GCRDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Capabilities").getLength() > 0) ? true : false;
 		if (GCP_Flag) {
 			String msg = "Valid GetCapabilities via POST/XML for WPS 2.0";
 			Assert.assertTrue(GCP_Flag, msg);
@@ -306,12 +306,12 @@ fails. Overall test passes if all individual tests pass.
 		String SERVICE_URL = this.ServiceUrl.toString();
 		URI uriDescribeProcessRequestTemplate = BasicTests.class.getResource(DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH).toURI();
 		Document DPDocument = URIUtils.parseURI(uriDescribeProcessRequestTemplate);
-		DPDocument.getElementsByTagName("ows:Identifier").item(0).setTextContent(this.EchoProcessId);;
+		DPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).setTextContent(this.EchoProcessId);;
 		
 		String DPRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, DPDocument);
 		Document DPRDocument = TransformXMLStringToXMLDocument(DPRXmlString);
 		
-		Boolean DPP_Flag = (DPRDocument.getElementsByTagName("wps:ProcessOfferings").getLength() > 0) ? true : false;
+		Boolean DPP_Flag = (DPRDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOfferings").getLength() > 0) ? true : false;
 		if (DPP_Flag) {
 			String msg = "Valid DescribeProcess via POST/XML for WPS 2.0";
 			Assert.assertTrue(DPP_Flag, msg);
@@ -338,7 +338,7 @@ fails. Overall test passes if all individual tests pass.
 		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
 		
 		//Response document
-		Element executeElement = (Element) literalDocument.getElementsByTagName("wps:Execute").item(0);
+		Element executeElement = (Element) literalDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute").item(0);
 		executeElement.setAttribute("mode", "sync");
 		executeElement.setAttribute("response", "document");
 		try {
@@ -395,13 +395,13 @@ fails. Overall test passes if all individual tests pass.
 		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
 
 		//get input id
-		NodeList inputList = responseDescribeProcessDocument.getElementsByTagName("wps:Input");
+		NodeList inputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input");
 		String literalInputId = "", literalOutputId = "", complexInputId = "", complexOutputId = "";
 		for (int i = 0; i < inputList.getLength(); i++) {
 			Element element = (Element) inputList.item(i);
-			Element literalInputElement = (Element) element.getElementsByTagName("ns:LiteralData").item(0);
-			Element complexInputElement = (Element) element.getElementsByTagName("ns:ComplexData").item(0);
-			String Id = element.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			Element literalInputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
+			Element complexInputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
+			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).getTextContent();
 			if(literalInputElement != null) {
 				literalInputId = Id;
 			}
@@ -411,12 +411,12 @@ fails. Overall test passes if all individual tests pass.
 		}
 
 		//get output id
-		NodeList outputList = responseDescribeProcessDocument.getElementsByTagName("wps:Output");
+		NodeList outputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Output");
 		for (int i = 0; i < outputList.getLength(); i++) {
 			Element element = (Element) outputList.item(i);
-			Element literalOutputElement = (Element) element.getElementsByTagName("ns:LiteralData").item(0);
-			Element complexOutputElement = (Element) element.getElementsByTagName("ns:ComplexData").item(0);
-			String Id = element.getElementsByTagName("ows:Identifier").item(0).getTextContent();
+			Element literalOutputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
+			Element complexOutputElement = (Element) element.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
+			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).getTextContent();
 			if(literalOutputElement != null) {
 				literalOutputId = Id;
 			}
@@ -426,9 +426,9 @@ fails. Overall test passes if all individual tests pass.
 		}
 
 		//Test LiteralData
-		Element requestInputElement = (Element) SEPDocument.getElementsByTagName("wps:Input").item(0);
-		Element requestOutputElement = (Element) SEPDocument.getElementsByTagName("wps:Output").item(0);
-		Element requestIdElement = (Element) SEPDocument.getElementsByTagName("ows:Identifier").item(0);
+		Element requestInputElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Input").item(0);
+		Element requestOutputElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Output").item(0);
+		Element requestIdElement = (Element) SEPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0","Identifier").item(0);
 		//replace id
 		requestIdElement.setTextContent(ECHO_PROCESS_ID);
 		requestInputElement.setAttribute("id", literalInputId);
@@ -452,7 +452,7 @@ fails. Overall test passes if all individual tests pass.
 		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
 		
 		//Response document
-		Element executeElement = (Element) literalDocument.getElementsByTagName("wps:Execute").item(0);
+		Element executeElement = (Element) literalDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Execute").item(0);
 		executeElement.setAttribute("mode", "async");
 		executeElement.setAttribute("response", "document");
 		try {
@@ -496,6 +496,103 @@ fails. Overall test passes if all individual tests pass.
 	}
 	
 	/**
+	 * A.5.13. Verify that the server can handle the execution mode 'auto' requested
+	 * via POST/XML Flow of Test Description: Flow of Test Description: Send a valid
+	 * XML Execute request to the server under test, setting the “mode” attribute to
+	 * “auto”. Verify that a valid Execute wps:Result is returned.
+	 * @throws Exception 
+	 */
+	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.13. Verify that the server can handle the execution mode 'auto' requested via POST/XML.")
+	public void ValidAutoExcecuteViaPOSTXML() throws Exception {
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document literalDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		// Process Literal Request
+		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
+		
+		// Get the processid from user and replace the processid in the template xml
+		// request file
+		String ECHO_PROCESS_ID = this.EchoProcessId;
+
+		// Parse the input id and output id in DescribeProcess
+		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
+		DP_Parameters.put("Service", "WPS");
+		DP_Parameters.put("Version", "2.0.0");
+		DP_Parameters.put("Request", "DescribeProcess");
+		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
+		String responseDescribeProcess = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
+		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
+		
+		Element ProcessOfferingElement = (Element) responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOffering").item(0);
+		//Element ProcessOfferingElement = (Element) responseDescribeProcessDocument.getElementsByTagName("wps:ProcessOffering").item(0);
+		//System.out.println(ProcessOfferingElement.getAttribute("outputTransmission"));
+		String outputTransmission = ProcessOfferingElement.getAttribute("outputTransmission");
+		String jobControlOptions = ProcessOfferingElement.getAttribute("jobControlOptions");
+		
+		Element executeElement = (Element) literalDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute").item(0);
+		
+		//case 1
+		if (outputTransmission.contains("reference")) {
+			// Response document
+			executeElement.setAttribute("response", "document");
+			
+			//case 1c runs both case 1a and 1b
+			//case 1a
+			if (jobControlOptions.contains("sync-execute")) {
+				executeElement.setAttribute("mode", "sync");
+				TestPostWithDocumentAndAssertMessage(SERVICE_URL, literalDocument, "Invalid SyncExecute via POST/XML for WPS 2.0");
+			}
+			
+			//case 1b
+			if (jobControlOptions.contains("async-execute")) {
+				executeElement.setAttribute("mode", "async");
+				TestPostWithDocumentAndAssertMessage(SERVICE_URL, literalDocument, "Invalid AsyncExecute via POST/XML for WPS 2.0");
+			}
+			
+		}
+		
+		//case 2
+		if (outputTransmission.contains("value")) {
+			// Raw
+			executeElement.setAttribute("response", "raw");
+			
+			//case 2c runs both case 2a and 2b
+			//case 2a
+			if (jobControlOptions.contains("sync-execute")) {
+				executeElement.setAttribute("mode", "sync");
+				String respRawResult = GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+				boolean respRawFlag = respRawResult.equals("hello_literal");
+				assertTrue(respRawFlag, "Invalid SyncExecute via POST/XML for WPS 2.0");
+			}
+			
+			//case 2b
+			if (jobControlOptions.contains("async-execute")) {
+				executeElement.setAttribute("mode", "async");
+				TestPostWithDocumentAndAssertMessage(SERVICE_URL, literalDocument, "Invalid AsyncExecute via POST/XML for WPS 2.0");
+			}
+		}
+	}
+	
+	public void TestPostWithDocumentAndAssertMessage(String SERVICE_URL, Document literalDocument, String message) throws Exception {
+		// status code is 200 response validation
+		HttpURLConnection conn = GetConnection(SERVICE_URL);
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/xml");
+		conn.setDoOutput(true);
+
+		DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
+		String xml = TransformXMLDocumentToXMLString(literalDocument);
+		outputStream.writeBytes(xml);
+		outputStream.flush();
+		outputStream.close();
+
+		int responseCode = conn.getResponseCode();
+		boolean respDocFlag = (responseCode == HttpURLConnection.HTTP_OK);
+		assertTrue(respDocFlag, message);
+	}
+	
+	/**
 	 * Description: Identify that a XML document is valid with XSD Template or not
 	 * @param xmlString
 	 * @param xsdPath
@@ -520,6 +617,7 @@ fails. Overall test passes if all individual tests pass.
     private static Document TransformXMLStringToXMLDocument(String xmlString) 
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         DocumentBuilder builder = null;
         try {
             builder = factory.newDocumentBuilder();
@@ -539,6 +637,7 @@ fails. Overall test passes if all individual tests pass.
     private static Document TransformXMLFileToXMLDocument(String URI) 
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         DocumentBuilder builder = null;
         try {
             builder = factory.newDocumentBuilder();
