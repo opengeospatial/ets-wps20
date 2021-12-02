@@ -574,6 +574,86 @@ fails. Overall test passes if all individual tests pass.
 		}
 	}
 	
+	/**
+	 * A.5.16. Verify that the server can handle GetCapabilities requests via GET/KVP
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.16. Verify that the server can handle GetCapabilities requests via GET/KVP.")
+	private void ValidGetCapabilitiesViaGETKVP() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL 	= this.ServiceUrl.toString(); 
+		
+		Map<String,Object> GCU_Parameters = new LinkedHashMap<>();
+		GCU_Parameters.put("Service".toUpperCase(), "WPS");
+		GCU_Parameters.put("Version".toUpperCase(), "2.0.0");
+		GCU_Parameters.put("Request".toUpperCase(), "GetCapabilities");
+		String GCU_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, GCU_Parameters);
+		Document GCU_Document = TransformXMLStringToXMLDocument(GCU_XmlString);
+		
+		Map<String,Object> GCL_Parameters = new LinkedHashMap<>();
+		GCL_Parameters.put("Service".toLowerCase(), "WPS");
+		GCL_Parameters.put("Version".toLowerCase(), "2.0.0");
+		GCL_Parameters.put("Request".toLowerCase(), "GetCapabilities");
+		String GCL_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, GCL_Parameters);
+		Document GCL_Document = TransformXMLStringToXMLDocument(GCL_XmlString);
+		
+		Boolean GC_KVP_Flag = (GCU_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Capabilities").getLength() > 0 && GCL_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Capabilities").getLength() > 0) ? true : false;
+		if (GC_KVP_Flag) {
+			String msg = "Valid GetCapabilities via KVP for WPS 2.0";
+			Assert.assertTrue(GC_KVP_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid GetCapabilities via KVP for WPS 2.0"; 
+			Assert.assertTrue(GC_KVP_Flag, msg); 
+		}
+	}
+	
+	/**
+	 * A.5.17. Verify that the server can handle DescribeProcess requests via GET/KVP
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.17. Verify that the server can handle DescribeProcess requests via GET/KVP.")
+	private void ValidDescribeProcessViaGETKVP() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL 	= this.ServiceUrl.toString(); 
+		
+		Map<String,Object> GC_Parameters = new LinkedHashMap<>();
+		GC_Parameters.put("Service", "WPS");
+		GC_Parameters.put("Version", "2.0.0");
+		GC_Parameters.put("Request", "GetCapabilities");
+		String GC_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, GC_Parameters);
+		Document GC_Document = TransformXMLStringToXMLDocument(GC_XmlString);
+		String IdentifierName = GC_Document.getElementsByTagName("ows:Identifier").item(0).getTextContent(); 
+		
+		Map<String,Object> DPU_Parameters = new LinkedHashMap<>();
+		DPU_Parameters.put("Service".toUpperCase(), "WPS");
+		DPU_Parameters.put("Version".toUpperCase(), "2.0.0");
+		DPU_Parameters.put("Request".toUpperCase(), "DescribeProcess");
+		DPU_Parameters.put("Identifier".toUpperCase(), IdentifierName);
+		String DPU_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, DPU_Parameters);
+		Document DPU_Document = TransformXMLStringToXMLDocument(DPU_XmlString);
+		
+		Map<String,Object> DPL_Parameters = new LinkedHashMap<>();
+		DPL_Parameters.put("Service".toLowerCase(), "WPS");
+		DPL_Parameters.put("Version".toLowerCase(), "2.0.0");
+		DPL_Parameters.put("Request".toLowerCase(), "DescribeProcess");
+		DPL_Parameters.put("Identifier".toLowerCase(), IdentifierName);
+		String DPL_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, DPL_Parameters);
+		Document DPL_Document = TransformXMLStringToXMLDocument(DPL_XmlString);
+		
+		Boolean DP_KVP_Flag = (DPU_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","ProcessOfferings").getLength() > 0 && DPL_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","ProcessOfferings").getLength() > 0) ? true : false;
+		if (DP_KVP_Flag) {
+			String msg = "Valid DescribeProcess via KVP for WPS 2.0";
+			Assert.assertTrue(DP_KVP_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid DescribeProcess via KVP for WPS 2.0"; 
+			Assert.assertTrue(DP_KVP_Flag, msg); 
+		}
+	}
+	
 	public void TestPostWithDocumentAndAssertMessage(String SERVICE_URL, Document literalDocument, String message) throws Exception {
 		// status code is 200 response validation
 		HttpURLConnection conn = GetConnection(SERVICE_URL);
