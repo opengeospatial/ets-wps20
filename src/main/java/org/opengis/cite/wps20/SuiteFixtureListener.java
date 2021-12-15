@@ -78,6 +78,62 @@ public class SuiteFixtureListener implements ISuiteListener {
             throw new RuntimeException("Failed to parse resource retrieved from " + iutRef, x);
         }
         suite.setAttribute(SuiteAttribute.TEST_SUBJECT.getName(), iutDoc);
+        
+        /* Define SERVICE_URL parameter */
+        String ServiceUrlParam = params.get(TestRunArg.SERVICE_URL.toString());
+		if ((null == ServiceUrlParam) || ServiceUrlParam.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Required test run parameter not found: " + TestRunArg.SERVICE_URL.toString());
+		}
+		String ServiceUrlRefString = params.get(TestRunArg.SERVICE_URL.toString());
+		suite.setAttribute(SuiteAttribute.SERVICE_URL.getName(), URI.create(ServiceUrlRefString));
+		
+		/* Define SERVICE_URL parameter */
+        String EchoProcessIdParam = params.get(TestRunArg.ECHO_PROCESS_ID.toString());
+		if ((null == EchoProcessIdParam) || EchoProcessIdParam.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Required test run parameter not found: " + TestRunArg.ECHO_PROCESS_ID.toString());
+		}
+		String EchoProcessIdRefString = params.get(TestRunArg.ECHO_PROCESS_ID.toString());
+		suite.setAttribute(SuiteAttribute.ECHO_PROCESS_ID.getName(), EchoProcessIdRefString); 
+		
+		/*
+		//Define GC_XML_URI parameter
+		String GcXmlUriParam 	= params.get(TestRunArg.GC_XML_URI.toString());
+        URI GcXmlUriRef 		= URI.create(GcXmlUriParam.trim());
+        File GcXmlUriFile 		= null;
+        try {
+        	GcXmlUriFile = URIUtils.dereferenceURI(GcXmlUriRef);
+        }catch (Exception ex) {
+            throw new RuntimeException("Failed to dereference resource located at " + GcXmlUriRef, ex);        	
+        }
+        Document GcXmlUriDoc = null;
+        try {
+        	GcXmlUriDoc = URIUtils.parseURI(GcXmlUriFile.toURI());
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to parse resource retrieved from " + GcXmlUriRef, ex);
+        }
+        suite.setAttribute(SuiteAttribute.GC_XML_URI.getName(), GcXmlUriDoc);
+        
+        //Define DP_XML_URI parameter
+		String DpXmlUriParam 	= params.get(TestRunArg.DP_XML_URI.toString());
+        URI DpXmlUriRef 		= URI.create(DpXmlUriParam.trim());
+        File DpXmlUriFile 		= null;
+        try {
+        	DpXmlUriFile = URIUtils.dereferenceURI(DpXmlUriRef);
+        }catch (Exception ex) {
+            throw new RuntimeException("Failed to dereference resource located at " + DpXmlUriRef, ex);        	
+        }
+        Document DpXmlUriDoc = null;
+        try {
+        	DpXmlUriDoc = URIUtils.parseURI(DpXmlUriFile.toURI());
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to parse resource retrieved from " + DpXmlUriRef, ex);
+        }
+        suite.setAttribute(SuiteAttribute.DP_XML_URI.getName(), DpXmlUriDoc);
+        */
+        
+        
         if (TestSuiteLogger.isLoggable(Level.FINE)) {
             StringBuilder logMsg = new StringBuilder("Parsed resource retrieved from ");
             logMsg.append(iutRef).append("\n");

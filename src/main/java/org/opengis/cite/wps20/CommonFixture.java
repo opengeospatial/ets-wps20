@@ -35,6 +35,15 @@ public class CommonFixture {
      * An HTTP response message.
      */
     protected ClientResponse response;
+    
+    protected URI ServiceUrl;
+    
+    /* Define Arguments */
+    protected String EchoProcessId;
+    
+    //protected Document GcXmlUri;
+    
+    //protected Document DpXmlUri;
 
     /**
      * Initializes the common test fixture with a client component for 
@@ -53,6 +62,36 @@ public class CommonFixture {
         if (null == obj) {
             throw new SkipException("Test subject not found in ITestContext.");
         }
+         
+        /* Define SERVICE_URL parameter */
+        Object ServiceUrlObj = testContext.getSuite().getAttribute(SuiteAttribute.SERVICE_URL.getName());
+        if ((null != ServiceUrlObj)){        	
+            this.ServiceUrl = URI.class.cast(ServiceUrlObj);
+            System.out.println("WPS 2.0 SERVICE URL: " + this.ServiceUrl.toString());        	
+        }
+        
+        /* Define ECHO_PROCESS_ID parameter */
+        Object EchoProcessIdObj = testContext.getSuite().getAttribute(SuiteAttribute.ECHO_PROCESS_ID.getName());
+        if ((null != EchoProcessIdObj)){        	
+            this.EchoProcessId = String.class.cast(EchoProcessIdObj);
+            System.out.println("WPS 2.0 ECHO PROCESS ID: " + this.EchoProcessId.toString());        	
+        }
+        
+        /*
+        //Define GC_XML_URI parameter
+        Object GcXmlUriObj = testContext.getSuite().getAttribute(SuiteAttribute.GC_XML_URI.getName());
+        if((null != GcXmlUriObj) && Document.class.isAssignableFrom(GcXmlUriObj.getClass())) {
+        	this.GcXmlUri = Document.class.cast(GcXmlUriObj);
+        	System.out.println("WPS 2.0 GET CAPABILITIES POST/XML URL LOADED");  
+        }
+        
+        //Define DP_XML_URI parameter
+        Object DpXmlUriObj = testContext.getSuite().getAttribute(SuiteAttribute.DP_XML_URI.getName());
+        if((null != DpXmlUriObj) && Document.class.isAssignableFrom(DpXmlUriObj.getClass())) {
+        	this.DpXmlUri = Document.class.cast(DpXmlUriObj);
+        	System.out.println("WPS 2.0 DESCRIBE PROCESS POST/XML URL LOADED");  
+        }
+        */
     }
 
     @BeforeMethod

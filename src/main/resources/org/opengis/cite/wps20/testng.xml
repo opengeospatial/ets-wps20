@@ -12,10 +12,11 @@
 
   <test name="Conformance Level 1">
     <packages>
-      <package name="org.opengis.cite.wps20.level1" />
+      <!-- This one need to turn off to avoid run unrequired classes -->
+      <!-- <package name="org.opengis.cite.wps20.level1" /> -->
     </packages>
     <classes>
-      <class name="org.opengis.cite.wps20.SuitePreconditions" />
+      <class name="org.opengis.cite.wps20.level1.BasicTests" />
     </classes>
   </test>
   <!-- Add test sets for other conformance classes/levels -->

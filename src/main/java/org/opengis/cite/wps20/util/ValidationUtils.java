@@ -18,11 +18,15 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.opengis.cite.wps20.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
+import org.opengis.cite.validation.XmlSchemaCompiler;
+import org.opengis.cite.wps20.util.ValidationUtils;
 import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.SAXException;
 
 /**
  * A utility class that provides convenience methods to support schema
@@ -158,5 +162,23 @@ public class ValidationUtils {
             schemaURIs.add(schemaURI);
         }
         return schemaURIs;
+    }
+    
+    public static Schema createSchema(String xsdPath) {
+        URL entityCatalog = ValidationUtils.class.getResource(ROOT_PKG
+                + "schema-catalog.xml");
+        XmlSchemaCompiler xsdCompiler = new XmlSchemaCompiler(entityCatalog);
+        Schema wpsSchema = null;
+        try {
+            URL schemaURL = ValidationUtils.class.getResource(ROOT_PKG
+                    + xsdPath);
+            Source xsdSource = new StreamSource(schemaURL.toString());
+            wpsSchema = xsdCompiler
+                    .compileXmlSchema(new Source[] { xsdSource });
+        } catch (SAXException e) {
+            TestSuiteLogger.log(Level.WARNING,
+                    "Failed to create WFS Schema object.", e);
+        }
+        return wpsSchema;
     }
 }

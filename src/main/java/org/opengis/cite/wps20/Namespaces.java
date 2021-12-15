@@ -21,11 +21,11 @@ public class Namespaces {
     public static final String OWS = "http://www.opengis.net/ows/1.1";
     /** ISO 19136 (GML 3.2) */
     public static final String GML = "http://www.opengis.net/gml/3.2";
+    /** WPS 2.0.0 */
+    public static final String WPS = "http://www.opengis.net/wps/2.0.0";
     /** W3C XML Schema namespace */
-    public static final URI XSD = URI
-            .create("http://www.w3.org/2001/XMLSchema");
+    public static final URI XSD = URI.create("http://www.w3.org/2001/XMLSchema");
     /** Schematron (ISO 19757-3) namespace */
-    public static final URI SCH = URI
-            .create("http://purl.oclc.org/dsdl/schematron");
+    public static final URI SCH = URI.create("http://purl.oclc.org/dsdl/schematron");
 
 }
