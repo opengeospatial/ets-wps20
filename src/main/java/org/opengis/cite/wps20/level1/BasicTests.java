@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 //import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -66,6 +67,12 @@ public class BasicTests extends CommonFixture {
 	String DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/DescribeProcess.xml";
 	String LITERAL_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Literal.xml";
 	String COMPLEX_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Complex.xml";
+	
+	String INPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidInputValue.xml";
+	String INPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidInputReference.xml";
+	String OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputValue.xml";
+	String OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputReference.xml";
+	String UNIQUE_JOB_IDS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidUniqueJobIds.xml";
 	
 	/**
 	 * A.5.0. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML
@@ -227,6 +234,118 @@ fails. Overall test passes if all individual tests pass.
 	 }
 	
 	/**
+	 * A.5.3. Verify that the server correctly handles input data transmission by value. 
+	 * Flow of Test Description: Send Execute requests to the server under test with valid inputs passed by value. Test passed if the execution finishes successfully.
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.3. Verify that the server correctly handles input data transmission by value.")
+	private void ValidInputDataTranmissionByValue() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI URIInputValueTemplate = BasicTests.class.getResource(INPUT_VALUE_TRANSMISSION_TEMPLATE_PATH).toURI();
+		Document InputValueDocument = URIUtils.parseURI(URIInputValueTemplate);
+		
+		String InputValueResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, InputValueDocument);
+		Document InputValueResponseDocument = TransformXMLStringToXMLDocument(InputValueResponse);
+		boolean IVRD_Flag = InputValueResponseDocument.getElementsByTagName("wps:Data").getLength() > 0;	
+		
+		if (IVRD_Flag) {
+			String msg = "Valid Input Data Transmission by Value for WPS 2.0";
+			Assert.assertTrue(IVRD_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid Input Data Transmission by Value for WPS 2.0"; 
+			Assert.assertTrue(IVRD_Flag, msg); 
+		}	
+	}
+	
+	/**
+	 * A.5.4. Verify that the server correctly handles input data transmission by reference. 
+	 * Flow of Test Description: Send Execute requests to the server under test with valid inputs passed by reference. Test passed if the execution finishes successfully.
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.4. Verify that the server correctly handles input data transmission by reference.")
+	private void ValidInputDataTranmissionByReference() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI URIInputReferenceTemplate = BasicTests.class.getResource(INPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH).toURI();
+		Document InputReferenceDocument = URIUtils.parseURI(URIInputReferenceTemplate);
+		
+		String InputReferenceResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, InputReferenceDocument);
+		Document InputReferenceResponseDocument = TransformXMLStringToXMLDocument(InputReferenceResponse);
+		boolean IRRD_Flag = InputReferenceResponseDocument.getElementsByTagName("wps:Data").getLength() > 0;	
+		
+		if (IRRD_Flag) {
+			String msg = "Valid Input Data Transmission by Reference for WPS 2.0";
+			Assert.assertTrue(IRRD_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid Input Data Transmission by Reference for WPS 2.0"; 
+			Assert.assertTrue(IRRD_Flag, msg); 
+		}	
+	}
+	
+	/**
+	 * A.5.5. Verify that the server correctly handles output data transmission by value. 
+	 * Flow of Test Description: Check the available process offerings for outputs that can be retrieved by value. If there is an output that can be retrieved by value, send an Execute request to the server requesting the output by value. Test passes if a valid Execute response is returned containing the requested output. Skip this test if no output can be retrieved by value.
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.5. Verify that the server correctly handles output data transmission by value.")
+	private void ValidOutDataTranmissionByValue() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI URIOutputValueTemplate = BasicTests.class.getResource(OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH).toURI();
+		Document OutputValueDocument = URIUtils.parseURI(URIOutputValueTemplate);
+		
+		String OutputValueResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, OutputValueDocument);
+		Document OutputValueResponseDocument = TransformXMLStringToXMLDocument(OutputValueResponse);
+		boolean OVRD_Flag = OutputValueResponseDocument.getElementsByTagName("wps:Data").getLength() > 0;	
+		
+		if (OVRD_Flag) {
+			String msg = "Valid Output Data Transmission by Value for WPS 2.0";
+			Assert.assertTrue(OVRD_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid Output Data Transmission by Value for WPS 2.0"; 
+			Assert.assertTrue(OVRD_Flag, msg); 
+		}
+	}
+	
+	/**
+	 * A.5.6. Verify that the server correctly handles output data transmission by reference. 
+	 * Flow of Test Description: Check the available process offerings for outputs that can be retrieved by value. If there is an output that can be retrieved by value, send an Execute request to the server requesting the output by reference. Test passes if a valid Execute response is returned containing the requested output. Skip this test if no output can be retrieved by reference.
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException 
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.6. Verify that the server correctly handles output data transmission by reference.")
+	private void ValidOutDataTranmissionByReference() throws IOException,URISyntaxException, SAXException { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		URI URIOutputReferenceTemplate = BasicTests.class.getResource(OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH).toURI();
+		Document OutputReferenceDocument = URIUtils.parseURI(URIOutputReferenceTemplate);
+		
+		String OutputReferenceResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, OutputReferenceDocument);
+		Document OutputReferenceResponseDocument = TransformXMLStringToXMLDocument(OutputReferenceResponse);
+		boolean ORRD_Flag = OutputReferenceResponseDocument.getElementsByTagName("Reference").getLength() > 0;	
+		
+		if (ORRD_Flag) {
+			String msg = "Valid Output Data Transmission by Reference for WPS 2.0";
+			Assert.assertTrue(ORRD_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid Output Data Transmission by Reference for WPS 2.0"; 
+			Assert.assertTrue(ORRD_Flag, msg); 
+		}
+	}
+	
+	/**
 	 * A.5.7. Verify that each process the server offers has a unique identifier
 	 * Flow of Test Description: Get all available processes from the server under test. Test passes if all processes have a unique identifier.
 	 * @throws IOException
@@ -264,8 +383,7 @@ fails. Overall test passes if all individual tests pass.
 		else {
 			String msg = "Invalid Unique Identifier for WPS 2.0"; 
 			Assert.assertTrue(UI_Flag, msg); 
-		}
-		 
+		}		 
 	 }
 	
 	/**
@@ -306,7 +424,7 @@ fails. Overall test passes if all individual tests pass.
 		String SERVICE_URL = this.ServiceUrl.toString();
 		URI uriDescribeProcessRequestTemplate = BasicTests.class.getResource(DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH).toURI();
 		Document DPDocument = URIUtils.parseURI(uriDescribeProcessRequestTemplate);
-		DPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).setTextContent(this.EchoProcessId);;
+		DPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0).setTextContent(this.EchoProcessId);
 		
 		String DPRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, DPDocument);
 		Document DPRDocument = TransformXMLStringToXMLDocument(DPRXmlString);
@@ -432,8 +550,7 @@ fails. Overall test passes if all individual tests pass.
 		//replace id
 		requestIdElement.setTextContent(ECHO_PROCESS_ID);
 		requestInputElement.setAttribute("id", literalInputId);
-		requestOutputElement.setAttribute("id", literalOutputId);
-		
+		requestOutputElement.setAttribute("id", literalOutputId);		
 	}
 	
 	/**
