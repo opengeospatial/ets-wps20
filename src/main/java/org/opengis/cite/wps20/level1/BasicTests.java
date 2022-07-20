@@ -249,7 +249,8 @@ fails. Overall test passes if all individual tests pass.
 		
 		String InputValueResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, InputValueDocument);
 		Document InputValueResponseDocument = TransformXMLStringToXMLDocument(InputValueResponse);
-		boolean IVRD_Flag = InputValueResponseDocument.getElementsByTagName("wps:Data").getLength() > 0;	
+		NodeList IVRD_List = InputValueResponseDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Data");
+		boolean IVRD_Flag = IVRD_List.getLength() > 0;	
 		
 		if (IVRD_Flag) {
 			String msg = "Valid Input Data Transmission by Value for WPS 2.0";
@@ -277,7 +278,8 @@ fails. Overall test passes if all individual tests pass.
 		
 		String InputReferenceResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, InputReferenceDocument);
 		Document InputReferenceResponseDocument = TransformXMLStringToXMLDocument(InputReferenceResponse);
-		boolean IRRD_Flag = InputReferenceResponseDocument.getElementsByTagName("wps:Data").getLength() > 0;	
+		NodeList IRRD_List = InputReferenceResponseDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Result");
+		boolean IRRD_Flag = IRRD_List.getLength() > 0;	
 		
 		if (IRRD_Flag) {
 			String msg = "Valid Input Data Transmission by Reference for WPS 2.0";
@@ -305,7 +307,8 @@ fails. Overall test passes if all individual tests pass.
 		
 		String OutputValueResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, OutputValueDocument);
 		Document OutputValueResponseDocument = TransformXMLStringToXMLDocument(OutputValueResponse);
-		boolean OVRD_Flag = OutputValueResponseDocument.getElementsByTagName("wps:Data").getLength() > 0;	
+		NodeList OVRD_List = OutputValueResponseDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Data");
+		boolean OVRD_Flag = OVRD_List.getLength() > 0;	
 		
 		if (OVRD_Flag) {
 			String msg = "Valid Output Data Transmission by Value for WPS 2.0";
@@ -333,7 +336,8 @@ fails. Overall test passes if all individual tests pass.
 		
 		String OutputReferenceResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, OutputReferenceDocument);
 		Document OutputReferenceResponseDocument = TransformXMLStringToXMLDocument(OutputReferenceResponse);
-		boolean ORRD_Flag = OutputReferenceResponseDocument.getElementsByTagName("Reference").getLength() > 0;	
+		NodeList ORRD_List = OutputReferenceResponseDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0","Reference");
+		boolean ORRD_Flag = ORRD_List.getLength() > 0;	
 		
 		if (ORRD_Flag) {
 			String msg = "Valid Output Data Transmission by Reference for WPS 2.0";
@@ -384,6 +388,45 @@ fails. Overall test passes if all individual tests pass.
 			String msg = "Invalid Unique Identifier for WPS 2.0"; 
 			Assert.assertTrue(UI_Flag, msg); 
 		}		 
+	 }
+	
+	/**
+	 * A.5.8. Verify that the server creates a unique jobID for each job
+	 * Flow of Test Description: Send more than one asynchronous Execute requests to the server under test. Test passes if the retrieved JobIDs differ from each other.
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException
+	 */
+	@Test(enabled=true, groups="A.5. Basic Tests", description="A.5.8. Verify that the server creates a unique jobID for each job.")
+	private void ValidUniqueJobIdentifier() throws URISyntaxException, SAXException, IOException { 
+		String SERVICE_URL = this.ServiceUrl.toString();
+		
+		Boolean UJRD_Flag 		= true;
+		Set<String> JNameList 	= new HashSet<>();
+		
+		Random rand = new Random(); 
+		int value = rand.nextInt(10); 
+		
+        for (int i = 0; i < value; i++) {
+        	URI URIUniqueJobIdsTemplate = BasicTests.class.getResource(UNIQUE_JOB_IDS_TEMPLATE_PATH).toURI();
+    		Document UniqueJobIdsDocument = URIUtils.parseURI(URIUniqueJobIdsTemplate);    		
+    		String UniqueJobIdsResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, UniqueJobIdsDocument);
+    		Document UniqueJobIdsResponseDocument = TransformXMLStringToXMLDocument(UniqueJobIdsResponse);
+    		String JName = UniqueJobIdsResponseDocument.getElementsByTagName("wps:JobID").item(0).getTextContent();
+            if (JNameList.add(JName) == false) {
+            	UJRD_Flag = false;
+            	break;
+            }
+        }
+        
+		if (UJRD_Flag) {
+			String msg = "Valid Unique Job Ids for WPS 2.0";
+			Assert.assertTrue(UJRD_Flag, msg);
+		} 
+		else {
+			String msg = "Invalid Unique Job Ids for WPS 2.0"; 
+			Assert.assertTrue(UJRD_Flag, msg); 
+		} 
 	 }
 	
 	/**
