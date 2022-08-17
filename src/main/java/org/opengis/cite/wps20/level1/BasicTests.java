@@ -76,6 +76,97 @@ public class BasicTests extends CommonFixture {
 	String UNIQUE_JOB_IDS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidUniqueJobIds.xml";
 
 	/**
+	 * A.4.1. Verify that a given process description is in compliance with the
+Process XML encoding. Verify that the tested document fulfils all requirements listed in
+req/native-process/xml-encoding/process. 
+	 * 
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException
+	 */
+	@Test(enabled = true, dependsOnMethods = {}, groups = "A.4. WPS Process Model Encoding", description = "A.4.1. Verify that a given process description is in compliance with the Process XML encoding")
+	private void VerifyProcessXMLEncoding() throws IOException, URISyntaxException, SAXException 	{
+		String SERVICE_URL = this.ServiceUrl.toString();
+
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		String ECHO_PROCESS_ID = this.EchoProcessId;
+		
+		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
+		DP_Parameters.put("Service", "WPS");
+		DP_Parameters.put("Version", "2.0.0");
+		DP_Parameters.put("Request", "DescribeProcess");
+		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
+		String VPE_String = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
+
+		Boolean VPE_Flag = null;
+		if (isXMLSchemaValid(VPE_String, "xsd/opengis/wps/2.0/wps.xsd")) {
+			VPE_Flag = true;
+			String msg = "Valid Process XML Encoding for WPS 2.0";
+			Assert.assertTrue(VPE_Flag, msg);
+		} else {
+			VPE_Flag = false;
+			String msg = "Invalid Process XML Encoding for WPS 2.0";
+			Assert.assertTrue(VPE_Flag, msg);
+		}
+	}
+	
+	/**
+	 * A.4.3. Verify that a given process description is in compliance with the
+Process XML encoding. Verify that the tested document fulfills all requirements listed in
+req/native-process/xml-encoding/process. 
+	 * @throws Exception 
+	 */
+	@Test(enabled = true, dependsOnMethods = {}, groups = "A.4. WPS Process Model Encoding", description = "A.4.3. Verify that any XML data type description and values that are used in conjunction with the native process model are encoded in compliance with the process model XML encoding.")
+	private void VerifyProcessDataTypeXMLEncoding() throws Exception {
+		String SERVICE_URL = this.ServiceUrl.toString();
+
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		String ECHO_PROCESS_ID = this.EchoProcessId;
+		
+		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
+		DP_Parameters.put("Service", "WPS");
+		DP_Parameters.put("Version", "2.0.0");
+		DP_Parameters.put("Request", "DescribeProcess");
+		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
+		String VPE_String = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
+		Document VPE_Document = TransformXMLStringToXMLDocument(VPE_String);
+		
+		Boolean HLCB_Flag = true;
+		
+		if(VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").getLength() == 0) {
+			HLCB_Flag = false;
+		}
+		
+		if(VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").getLength() == 0) {
+			HLCB_Flag = false;
+		}
+		
+		if(VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "BoundingBoxData").getLength() == 0) {
+			HLCB_Flag = false;
+		}
+				
+		if(HLCB_Flag) { 	
+			Boolean VPE_Flag = null;
+			String msg = null;
+			
+			if (isXMLSchemaValid(VPE_String, "xsd/opengis/wps/2.0/wps.xsd")) {
+				VPE_Flag = true;
+				msg = "Valid Process DataTypes XML Encoding for WPS 2.0";
+			} else {
+				VPE_Flag = false;
+				msg = "Invalid Process DataTypes XML Encoding for WPS 2.0";
+			}
+			
+			Assert.assertTrue(VPE_Flag, msg);
+		} else {
+			String msg = "The process should include ComplexData, LiteralData and BoundingBoxData";
+			Assert.assertTrue(HLCB_Flag, msg);
+		}
+	}
+	
+	/**
 	 * Precondition. Verify that the server can handle echo process
 	 * Flow of Test Description - Step 1: Send a valid DescribeProcess request to the server under test, setting the identifier to the echo process id. Verify that the server offers an echo process.
 	 * Flow of Test Description - Step 2: Send a valid Execute request to the server under test, setting the identifier to the echo process id. Verify that the server can handle echo process.
