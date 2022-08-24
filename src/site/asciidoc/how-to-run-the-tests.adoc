@@ -21,8 +21,12 @@ You can modify the sample file in `src/main/config/test-run-props.xml`
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
-  <comment>Test run arguments</comment>
-  <entry key="iut">https://host/capabilities</entry>
+	<comment>WPS 2.0 Sample Test Run Arguments</comment>
+	<entry key="IUT">https://geoprocessing.demo.52north.org/javaps/service</entry>
+	<!-- BEGIN OF ARGUMENTS DEFINITION -->
+	<entry key="SERVICE_URL">https://geoprocessing.demo.52north.org/javaps/service</entry>
+	<entry key="ECHO_PROCESS_ID">org.n52.javaps.test.EchoProcess</entry>
+	<!-- END OF ARGUMENTS DEFINITION -->
 </properties>
 ----
 
