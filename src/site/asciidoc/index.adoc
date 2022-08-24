@@ -8,34 +8,25 @@ Figure 1. Conformance testing is a kind of "black box" testing that examines the
 externally visible characteristics or behaviors of the IUT while disregarding
 any implementation details.
 
-.Relevant specifications
-[caption="Figure 1: "]
-image::img/specifications.png[]
-
-
-
 Several conformance classes are defined in the principal specifications; the ones
 listed below are covered by this test suite:
 
-* Class A
-   - List capabilities of conformance class A
-* Class B
-    - List capabilities of conformance class B
+* WPS Process Model Encoding (Conformance Class)
+    - Including Process and data types XML Encoding conformance tests. For the Process data types XML Encoding Conformance Class, 3 different data types, ComplexData, LiteralData and BoundingBoxData, must exist in DescribeProcess.
+* Synchronous WPS (Conformance Class)
+    - Including all conformance tests for synchronous execution.
 
 == Test requirements
 
 The documents listed below stipulate requirements that must be satisfied by a 
 conforming implementation.
 
-1. http://www.w3.org/TR/WCAG20/[Web Content Accessibility Guidelines (WCAG) 2.0]
-2. http://www.w3.org/TR/xml/[Extensible Markup Language (XML) 1.0, Fifth Edition]
-3. https://tools.ietf.org/html/rfc7231)[RFC 7231] - Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content
+1. http://docs.opengeospatial.org/is/14-065/14-065.html[WPS 2.0.2 Interface Standard Corrigendum 2]
 
 If any of the following preconditions are not satisfied then all tests in the
 suite will be marked as skipped.
 
-1. Precondition 1
-2. Precondition 2
+1. Precondition. Verify that the server can handle echo process.
 
 == Test suite structure
 
@@ -52,9 +43,6 @@ The general structure of the test suite is shown in Table 1.
 
 |Conformance Level 1
 |org.opengis.cite.wps20.level1.*
-
-|Conformance Level 2
-|org.opengis.cite.wps20.level2.*
 
 |===
 
@@ -76,14 +64,19 @@ The _Obligation_ descriptor can have the following values: M (mandatory), O (opt
 |Obligation
 |Description
 
-|iut
+|IUT
 |URI
 |M
 |A URI that refers to the implementation under test or metadata about it. Ampersand ('&amp;') characters must be percent-encoded as '%26'.
 
-|ics
-|A comma-separated list of string values.
-|O
-|An implementation conformance statement that indicates which conformance classes or options are supported.
+|SERVICE_URL
+|URI
+|M
+|A URI that refers to the implementation under test or metadata about it. Ampersand ('&amp;') characters must be percent-encoded as '%26'. Currently simply set this argument the same value with IUT.
+
+|ECHO_PROCESS_ID
+|A string value.
+|M
+|A string that refers to the echo process id implemented by the service.
 
 |===
