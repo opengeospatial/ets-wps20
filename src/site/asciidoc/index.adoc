@@ -12,7 +12,7 @@ Several conformance classes are defined in the principal specifications; the one
 listed below are covered by this test suite:
 
 * WPS Process Model Encoding (Conformance Class)
-    - Including Process and data types XML Encoding conformance tests.
+    - Including Process and data types XML Encoding conformance tests. For the Process data types XML Encoding Conformance Class, 3 different data types, ComplexData, LiteralData and BoundingBoxData, must exist in DescribeProcess.
 * Synchronous WPS (Conformance Class)
     - Including all conformance tests for synchronous execution.
 
