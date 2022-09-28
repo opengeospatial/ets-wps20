@@ -59,6 +59,8 @@ public class VerifySuiteFixtureListener {
         URL url = this.getClass().getResource("/atom-feed.xml");
         Map<String, String> params = new HashMap<String, String>();
         params.put(TestRunArg.IUT.toString(), url.toURI().toString());
+        params.put(TestRunArg.SERVICE_URL.toString(), url.toURI().toString());
+        params.put(TestRunArg.ECHO_PROCESS_ID.toString(), url.toURI().toString());
         when(xmlSuite.getParameters()).thenReturn(params);
         SuiteFixtureListener iut = new SuiteFixtureListener();
         iut.onStart(suite);

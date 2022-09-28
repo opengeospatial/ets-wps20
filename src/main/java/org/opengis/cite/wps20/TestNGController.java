@@ -159,7 +159,7 @@ public class TestNGController implements TestSuiteController {
         Map<String, String> args = new HashMap<String, String>();
         for (int i = 0; i < entries.getLength(); i++) {
             Element entry = (Element) entries.item(i);
-            args.put(entry.getAttribute("key"), entry.getTextContent());
+            args.put(entry.getAttribute("key").toUpperCase(), entry.getTextContent());
         }
         if (!args.containsKey(TestRunArg.IUT.toString())) {
             throw new IllegalArgumentException(
