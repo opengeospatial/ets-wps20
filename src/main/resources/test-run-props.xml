@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
-    <comment>Sample test run arguments</comment>
-    <entry key="iut">http://www.w3schools.com/xml/note.xml</entry>
-    <entry key="ics">class-A,class-B</entry>
+    <comment>WPS 2.0 Sample Test Run Arguments</comment>
+    <entry key="IUT">https://geoprocessing.demo.52north.org/javaps/service</entry>
+    <!-- BEGIN OF ARGUMENTS DEFINITION -->
+    <entry key="SERVICE_URL">https://geoprocessing.demo.52north.org/javaps/service</entry>
+    <entry key="ECHO_PROCESS_ID">org.n52.javaps.test.EchoProcess</entry>
+    <!-- END OF ARGUMENTS DEFINITION -->
 </properties>

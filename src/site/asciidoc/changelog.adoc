@@ -1,7 +1,9 @@
 = Release Notes
 
-== ${project.version} (YYYY-MM-DD)
-
+== 0.1 (2022-09-28)
 The initial release implements the following test requirements:
 
-- all mandatory conformance classes (Class A, Class B)
+* WPS Process Model Encoding (Conformance Class)
+    - Including Process and data types XML Encoding conformance tests. For the Process data types XML Encoding Conformance Class, 3 different data types, ComplexData, LiteralData and BoundingBoxData, must exist in DescribeProcess.
+* Synchronous WPS (Conformance Class)
+    - Including all conformance tests for synchronous execution.

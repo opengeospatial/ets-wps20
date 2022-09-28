@@ -36,10 +36,9 @@
 				 Fifth Edition</li>
 				 <li><a href="http://www.w3.org/TR/xmlbase/">XML Base</a>, Second Edition</li>
                </ul>
-               <p>Two conformance levels are defined:</p>
+               <p>One conformance level is defined:</p>
                <ul>
                  <li>Level 1</li>
-                 <li>Level 2</li>
                </ul>
              </div>
              <fieldset style="background:#ccffff">
@@ -52,18 +51,30 @@
                  </label>
                  <input id="uri" name="uri" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
                </p>
+			   <p>
+                 <label for="service_url">
+                   <h4 style="margin-bottom: 0.5em">Endpoint for testing WPS Service</h4>
+                 </label>
+                 <input id="service_url" name="service_url" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
+               </p>
+			   <p>
+                 <label for="echo_process_id">
+                   <h4 style="margin-bottom: 0.5em">Echo Process Id</h4>
+                 </label>
+                 <input id="echo_process_id" name="echo_process_id" size="128" type="text" value="" />
+               </p>
+			   <!--
                <p>
                  <label for="doc">
                    <h4 style="margin-bottom: 0.5em">Upload IUT</h4>
                  </label>
                  <input name="doc" id="doc" size="128" type="file" />
                </p>
+			   -->
                <p>
                  <label for="level">Conformance class: </label>
                  <input id="level-1" type="radio" name="level" value="1" checked="checked" />
                  <label for="level-1"> Level 1 | </label>
-                 <input id="level-2" type="radio" name="level" value="2" />
-                 <label class="form-label" for="level-2"> Level 2</label>
                </p>
              </fieldset>
              <p>
@@ -72,9 +83,13 @@
              </p>
            </ctl:form>
         </xsl:variable>
-        <xsl:variable name="iut-file" select="$form-data//value[@key='doc']/ctl:file-entry/@full-path" />
+		
+        <!--
+		<xsl:variable name="iut-file" select="$form-data//value[@key='doc']/ctl:file-entry/@full-path" />
+		-->
 	      <xsl:variable name="test-run-props">
 		    <properties version="1.0">
+			<!--
           <entry key="iut">
             <xsl:choose>
               <xsl:when test="empty($iut-file)">
@@ -85,7 +100,17 @@
               </xsl:otherwise>
             </xsl:choose>
           </entry>
-          <entry key="ics"><xsl:value-of select="$form-data/values/value[@key='level']"/></entry>
+		  -->
+		  <entry key="IUT">
+            <xsl:value-of select="normalize-space($form-data/values/value[@key='uri'])"/>
+          </entry>
+          <entry key="ICS"><xsl:value-of select="$form-data/values/value[@key='level']"/></entry>
+		  <entry key="SERVICE_URL">
+            <xsl:value-of select="normalize-space($form-data/values/value[@key='service_url'])"/>
+          </entry>
+		  <entry key="ECHO_PROCESS_ID">
+            <xsl:value-of select="normalize-space($form-data/values/value[@key='echo_process_id'])"/>
+          </entry>
 		    </properties>
 		   </xsl:variable>
        <xsl:variable name="testRunDir">
