@@ -74,6 +74,7 @@ public class BasicTests extends CommonFixture {
 	String OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputValue.xml";
 	String OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputReference.xml";
 	String UNIQUE_JOB_IDS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidUniqueJobIds.xml";
+	String GET_STATUS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetStatus.xml";
 
 	/**
 	 * A.4.1. Verify that a given process description is in compliance with the
