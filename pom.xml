@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.opengis.cite</groupId>
@@ -11,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opengis.cite</groupId>
   <artifactId>ets-wps20</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>WPS 2.0 Conformance Test Suite</name>
@@ -322,11 +320,10 @@
                   <goal>sign</goal>
                 </goals>
                 <configuration>
-                  <!-- Enable if GPG 2.1+ is used -->
-                  <!--<gpgArguments>
-                    <arg>&#45;&#45;pinentry-mode</arg>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
                     <arg>loopback</arg>
-                  </gpgArguments>-->
+                  </gpgArguments>
                 </configuration>
               </execution>
             </executions>
