@@ -75,6 +75,7 @@ public class BasicTests extends CommonFixture {
 	String OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputReference.xml";
 	String UNIQUE_JOB_IDS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidUniqueJobIds.xml";
 	String GET_STATUS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetStatus.xml";
+	String GET_RESULT_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetResult.xml";
 
 	/**
 	 * A.4.1. Verify that a given process description is in compliance with the
@@ -982,6 +983,74 @@ req/native-process/xml-encoding/process.
 			Assert.assertTrue(VAE_Flag, msg);
 		}
 	}
+	
+	/**
+	 * A.5.15. VSend a valid XML Execute request to the server under test, setting the “mode” 
+	 * attribute to “async”. Modulate the “response” parameter. Verify that a valid wps:StatusInfo
+	 * document is returned. Extract the wps:JobID. Check the status of the job. If the job 
+	 * succeeded, send a valid XML GetResult request to the server under test using the extracted 
+	 * JobID. Depending on the value of the “response” parameter of the above Execute request.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.15. Verify that the server can handle GetResult requests via POST/XML.")
+	public void ValidGetResultViaPOSTXML() throws Exception {
+		String SERVICE_URL = this.ServiceUrl.toString();
+
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document literalDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
+		Element executeElement = (Element) literalDocument
+				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute").item(0);
+		executeElement.setAttribute("mode", "async");
+		executeElement.setAttribute("response", "raw");
+		String VAEXmlString1 	= GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+		Document VAEDocument1	= TransformXMLStringToXMLDocument(VAEXmlString1);
+		Boolean VAE_Flag1 		= (VAEDocument1.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "StatusInfo").getLength() > 0) ? true : false;
+		
+		executeElement.setAttribute("response", "document");		
+		String VAEXmlString2 	= GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+		Document VAEDocument2	= TransformXMLStringToXMLDocument(VAEXmlString2);
+		Boolean VAE_Flag2 		= (VAEDocument2.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "StatusInfo").getLength() > 0) ? true : false;
+		
+		Boolean VAE_Flag = VAE_Flag1 && VAE_Flag2;
+		
+		if (VAE_Flag) {			
+			URI URIGetResultTemplate1 = BasicTests.class.getResource(GET_RESULT_TEMPLATE_PATH).toURI();			
+			Element JobIDElement1 	= (Element) VAEDocument1.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0);	
+			Document GetResultDocument1 	= URIUtils.parseURI(URIGetResultTemplate1);
+			Element JobIDElement2 	= (Element) GetResultDocument1.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0);
+			JobIDElement2.setTextContent(JobIDElement1.getTextContent());			
+			String VGRXmlString1 	= GetContentFromPOSTXMLRequest(SERVICE_URL, GetResultDocument1);
+			Document VGRDocument1 	= TransformXMLStringToXMLDocument(VGRXmlString1);			
+			Boolean VGR_Flag1 = (VGRDocument1.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralValue").getLength() > 0) ? true : false;
+			
+			URI URIGetResultTemplate2 = BasicTests.class.getResource(GET_RESULT_TEMPLATE_PATH).toURI();	
+			Element JobIDElement3 	= (Element) VAEDocument2.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0);
+			Document GetResultDocument2 	= URIUtils.parseURI(URIGetResultTemplate2);
+			Element JobIDElement4 	= (Element) GetResultDocument2.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0);
+			JobIDElement4.setTextContent(JobIDElement3.getTextContent());			
+			String VGRXmlString2 	= GetContentFromPOSTXMLRequest(SERVICE_URL, GetResultDocument2);
+			
+			Boolean VGR_Flag2 	= VGRXmlString2.contains("LiteralValue") ? true : false;
+
+//			Document VGRDocument2 	= TransformXMLStringToXMLDocument(VGRXmlString2);			
+//			Boolean VGR_Flag2 = (VGRDocument2.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Result").getLength() > 0) ? true : false;			
+			
+			Boolean VGR_Flag 	= VGR_Flag1 && VGR_Flag2;
+			
+			if (VGR_Flag) {
+				String msg = "Valid GetResult via POST/XML for WPS 2.0";
+				Assert.assertTrue(VGR_Flag, msg);
+			} else {
+				String msg = "Invalid GetResult via POST/XML for WPS 2.0";
+				Assert.assertTrue(VGR_Flag, msg);
+			}
+		} else {
+			String msg = "Invalid Execute via POST/XML for WPS 2.0";
+			Assert.assertTrue(VAE_Flag, msg);
+		}
+	}
 
 	/**
 	 * A.5.16. Verify that the server can handle GetCapabilities requests via
@@ -1071,7 +1140,62 @@ req/native-process/xml-encoding/process.
 			Assert.assertTrue(DP_KVP_Flag, msg);
 		}
 	}
+	
+	/**
+	 * A.5.18. Verify that the server can handle GetStatus requests via GET/KVP. 
+	 * Send a valid XML Execute request to the server under test, setting the “mode” attribute 
+	 * to “async”. Verify that a valid wps:StatusInfo document is returned. Extract the 
+	 * wps:JobID. Send a valid KVP GetStatus request to the server under test, using the 
+	 * extracted JobID and modulating upper and lower case of the parameter names. Test passes 
+	 * if a valid document of the type wps:StatusInfo is returned. 
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws SAXException
+	 */
+	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.18. Verify that the server can handle GetStatus requests via GET/KVP.")
+	private void ValidGetStausViaGETKVP() throws IOException, URISyntaxException, SAXException {
+		String SERVICE_URL = this.ServiceUrl.toString();
 
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
+		Document literalDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
+		Element executeElement = (Element) literalDocument
+				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute").item(0);
+		executeElement.setAttribute("mode", "async");
+		executeElement.setAttribute("response", "document");
+
+		String VAEXmlString 	= GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
+		Document VAEDocument 	= TransformXMLStringToXMLDocument(VAEXmlString);
+
+		Boolean VAE_Flag = (VAEDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "StatusInfo").getLength() > 0) ? true : false;
+		
+		if (VAE_Flag) {				 			
+			Element JobIDElement1 	= (Element) VAEDocument
+					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0);
+						
+			Map<String, Object> GS_Parameters = new LinkedHashMap<>();
+			GS_Parameters.put("Service", "WPS");
+			GS_Parameters.put("Version", "2.0.0");
+			GS_Parameters.put("Request", "GetStatus");
+			GS_Parameters.put("JobID", JobIDElement1.getTextContent());
+			String GS_XmlString 	= GetContentFromGETKVPRequest(SERVICE_URL, GS_Parameters);
+			Document GS_Document 	= TransformXMLStringToXMLDocument(GS_XmlString);
+						
+			Boolean VGS_Flag = (GS_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Status").getLength() > 0) ? true : false;
+			
+			if (VGS_Flag) {
+				String msg = "Valid GetStatus via GET/KVP for WPS 2.0";
+				Assert.assertTrue(VGS_Flag, msg);
+			} else {
+				String msg = "Invalid GetStatus via GET/KVP for WPS 2.0";
+				Assert.assertTrue(VGS_Flag, msg);
+			}
+		} else {
+			String msg = "Invalid Execute via POST/XML for WPS 2.0";
+			Assert.assertTrue(VAE_Flag, msg);
+		}
+	}
+	
 	public void TestPostWithDocumentAndAssertMessage(String SERVICE_URL, Document literalDocument, String message)
 			throws Exception {
 		// status code is 200 response validation
