@@ -1172,23 +1172,32 @@ req/native-process/xml-encoding/process.
 		if (VAE_Flag) {				 			
 			Element JobIDElement1 	= (Element) VAEDocument
 					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0);
-						
-			Map<String, Object> GS_Parameters = new LinkedHashMap<>();
-			GS_Parameters.put("Service", "WPS");
-			GS_Parameters.put("Version", "2.0.0");
-			GS_Parameters.put("Request", "GetStatus");
-			GS_Parameters.put("JobID", JobIDElement1.getTextContent());
-			String GS_XmlString 	= GetContentFromGETKVPRequest(SERVICE_URL, GS_Parameters);
-			Document GS_Document 	= TransformXMLStringToXMLDocument(GS_XmlString);
-						
-			Boolean VGS_Flag = (GS_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Status").getLength() > 0) ? true : false;
 			
-			if (VGS_Flag) {
+			Map<String, Object> GSU_Parameters = new LinkedHashMap<>();
+			GSU_Parameters.put("Service".toUpperCase(), "WPS");
+			GSU_Parameters.put("Version".toUpperCase(), "2.0.0");
+			GSU_Parameters.put("Request".toUpperCase(), "GetStatus");
+			GSU_Parameters.put("JobID".toUpperCase(), JobIDElement1.getTextContent());
+			String GSU_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, GSU_Parameters);
+			Document GSU_Document = TransformXMLStringToXMLDocument(GSU_XmlString);
+
+			Map<String, Object> GSL_Parameters = new LinkedHashMap<>();
+			GSL_Parameters.put("Service".toLowerCase(), "WPS");
+			GSL_Parameters.put("Version".toLowerCase(), "2.0.0");
+			GSL_Parameters.put("Request".toLowerCase(), "GetStatus");
+			GSL_Parameters.put("JobID".toLowerCase(), JobIDElement1.getTextContent());
+			String GSL_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, GSL_Parameters);
+			Document GSL_Document = TransformXMLStringToXMLDocument(GSL_XmlString);
+
+			Boolean GS_KVP_Flag = (GSU_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Status").getLength() > 0
+					&& GSL_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Status").getLength() > 0) ? true : false;			
+			
+			if (GS_KVP_Flag) {
 				String msg = "Valid GetStatus via GET/KVP for WPS 2.0";
-				Assert.assertTrue(VGS_Flag, msg);
+				Assert.assertTrue(GS_KVP_Flag, msg);
 			} else {
 				String msg = "Invalid GetStatus via GET/KVP for WPS 2.0";
-				Assert.assertTrue(VGS_Flag, msg);
+				Assert.assertTrue(GS_KVP_Flag, msg);
 			}
 		} else {
 			String msg = "Invalid Execute via POST/XML for WPS 2.0";

@@ -8,13 +8,15 @@ Figure 1. Conformance testing is a kind of "black box" testing that examines the
 externally visible characteristics or behaviors of the IUT while disregarding
 any implementation details.
 
-Several conformance classes are defined in the principal specifications; the ones
-listed below are covered by this test suite:
+The test suite evaluates compliance of an implementation to:
 
-* WPS Process Model Encoding (Conformance Class)
-    - Including Process and data types XML Encoding conformance tests. For the Process data types XML Encoding Conformance Class, 3 different data types, ComplexData, LiteralData and BoundingBoxData, must exist in DescribeProcess.
-* Synchronous WPS (Conformance Class)
-    - Including all conformance tests for synchronous execution.
+* WPS 2.0.2 Interface Standard Corrigendum 2 (OGC 14-065r2)
+
+Support for the following conformance classes is tested:
+
+* Basic WPS 
+* Synchronous WPS 
+* Asynchronous WPS
 
 == Test requirements
 
