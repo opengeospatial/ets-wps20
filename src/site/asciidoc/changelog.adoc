@@ -1,6 +1,19 @@
 = Release Notes
 
+== 0.2 (2022-11-23)
+* [#23](https://github.com/opengeospatial/ets-wps20/issues/23) Update documentation for v0.2
+* [#17](https://github.com/opengeospatial/ets-wps20/issues/17) Version column on landing page and in drop down menu when selecting test suite displays 1.0 instead of 2.0
+* [#7](https://github.com/opengeospatial/ets-wps20/issues/7) Implement Asynchronous WPS (Conformance Class)
+
 == 0.1 (2022-09-28)
+* [#13](https://github.com/opengeospatial/ets-wps20/issues/13) Update documentation of test suite
+* [#10](https://github.com/opengeospatial/ets-wps20/issues/10) Implement Basic WPS (Conformance Class)
+* [#6](https://github.com/opengeospatial/ets-wps20/issues/6) Create definition of echo process (test data of test suite)
+* [#5](https://github.com/opengeospatial/ets-wps20/issues/5) Which schemas should be used?
+* [#4](https://github.com/opengeospatial/ets-wps20/issues/4) Make sure test suite can be executed with TEAM Engine
+* [#3](https://github.com/opengeospatial/ets-wps20/issues/3) Implement Synchronous WPS (Conformance Class)
+* [#1](https://github.com/opengeospatial/ets-wps20/issues/1) Set up WPS 2.0 ETS repo
+
 The initial release implements the following test requirements:
 
 * WPS Process Model Encoding (Conformance Class)

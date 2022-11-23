@@ -30,15 +30,15 @@
            <ctl:form method="POST" width="800" height="600" xmlns="http://www.w3.org/1999/xhtml">
              <h2>WPS 2.0 Conformance Test Suite</h2>
              <div style="background:#F0F8FF" bgcolor="#F0F8FF">
-               <p>The implementation under test (IUT) is checked against the following specifications:</p>
+               <p>The test suite evaluates compliance of an implementation to:</p>
                <ul>
-                 <li><a href="http://www.w3.org/TR/xml/">Extensible Markup Language (XML) 1.0</a>, 
-				 Fifth Edition</li>
-				 <li><a href="http://www.w3.org/TR/xmlbase/">XML Base</a>, Second Edition</li>
+                 <li>WPS 2.0.2 Interface Standard Corrigendum 2 (OGC 14-065r2)</li>
                </ul>
-               <p>One conformance level is defined:</p>
+               <p>Support for the following conformance classes is tested:</p>
                <ul>
-                 <li>Level 1</li>
+                 <li>Basic WPS</li>
+                 <li>Synchronous WPS</li>
+                 <li>Asynchronous WPS</li>
                </ul>
              </div>
              <fieldset style="background:#ccffff">
@@ -49,19 +49,19 @@
                  <label for="uri">
                    <h4 style="margin-bottom: 0.5em">Location of IUT (absolute http: or file: URI)</h4>
                  </label>
-                 <input id="uri" name="uri" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
+                 <input id="uri" name="uri" size="128" type="text" value="https://geoprocessing.demo.52north.org/javaps/service" />
                </p>
 			   <p>
                  <label for="service_url">
                    <h4 style="margin-bottom: 0.5em">Endpoint for testing WPS Service</h4>
                  </label>
-                 <input id="service_url" name="service_url" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
+                 <input id="service_url" name="service_url" size="128" type="text" value="https://geoprocessing.demo.52north.org/javaps/service" />
                </p>
 			   <p>
                  <label for="echo_process_id">
                    <h4 style="margin-bottom: 0.5em">Echo Process Id</h4>
                  </label>
-                 <input id="echo_process_id" name="echo_process_id" size="128" type="text" value="" />
+                 <input id="echo_process_id" name="echo_process_id" size="128" type="text" value="org.n52.javaps.test.EchoProcess" />
                </p>
 			   <!--
                <p>
