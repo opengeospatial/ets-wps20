@@ -49,19 +49,19 @@
                  <label for="uri">
                    <h4 style="margin-bottom: 0.5em">Location of IUT (absolute http: or file: URI)</h4>
                  </label>
-                 <input id="uri" name="uri" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
+                 <input id="uri" name="uri" size="128" type="text" value="https://geoprocessing.demo.52north.org/javaps/service" />
                </p>
 			   <p>
                  <label for="service_url">
                    <h4 style="margin-bottom: 0.5em">Endpoint for testing WPS Service</h4>
                  </label>
-                 <input id="service_url" name="service_url" size="128" type="text" value="http://www.w3schools.com/xml/note.xml" />
+                 <input id="service_url" name="service_url" size="128" type="text" value="https://geoprocessing.demo.52north.org/javaps/service" />
                </p>
 			   <p>
                  <label for="echo_process_id">
                    <h4 style="margin-bottom: 0.5em">Echo Process Id</h4>
                  </label>
-                 <input id="echo_process_id" name="echo_process_id" size="128" type="text" value="" />
+                 <input id="echo_process_id" name="echo_process_id" size="128" type="text" value="org.n52.javaps.test.EchoProcess" />
                </p>
 			   <!--
                <p>
