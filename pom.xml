@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opengis.cite</groupId>
   <artifactId>ets-wps20</artifactId>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>WPS 2.0 Conformance Test Suite</name>
@@ -46,7 +46,7 @@
 
   <properties>
     <ets-code>wps20</ets-code>
-    <spec-version>1.0</spec-version>
+    <spec-version>2.0</spec-version>
     <docker.teamengine.version>5.4</docker.teamengine.version>
   </properties>
 
