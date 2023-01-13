@@ -57,7 +57,7 @@ public class SuiteFixtureListener implements ISuiteListener {
     void processSuiteParameters(ISuite suite) {
         Map<String, String> params = suite.getXmlSuite().getParameters();
         TestSuiteLogger.log(Level.CONFIG, "Suite parameters\n" + params.toString());
-        String iutParam = params.get(TestRunArg.IUT.toString());
+        /*String iutParam = params.get(TestRunArg.IUT.toString());
         if ((null == iutParam) || iutParam.isEmpty()) {
             throw new IllegalArgumentException("Required test run parameter not found: " + TestRunArg.IUT.toString());
         }
@@ -77,16 +77,16 @@ public class SuiteFixtureListener implements ISuiteListener {
         } catch (Exception x) {
             throw new RuntimeException("Failed to parse resource retrieved from " + iutRef, x);
         }
-        suite.setAttribute(SuiteAttribute.TEST_SUBJECT.getName(), iutDoc);
+        suite.setAttribute(SuiteAttribute.TEST_SUBJECT.getName(), iutDoc);*/
         
         /* Define SERVICE_URL parameter */
-        String ServiceUrlParam = params.get(TestRunArg.SERVICE_URL.toString());
+        String ServiceUrlParam = params.get(TestRunArg.IUT.toString());
 		if ((null == ServiceUrlParam) || ServiceUrlParam.isEmpty()) {
 			throw new IllegalArgumentException(
-					"Required test run parameter not found: " + TestRunArg.SERVICE_URL.toString());
+					"Required test run parameter not found: " + TestRunArg.IUT.toString());
 		}
-		String ServiceUrlRefString = params.get(TestRunArg.SERVICE_URL.toString());
-		suite.setAttribute(SuiteAttribute.SERVICE_URL.getName(), URI.create(ServiceUrlRefString));
+		//mapping TestRunArg.IUT to SuiteAttribute.SERVICE_URL
+		suite.setAttribute(SuiteAttribute.SERVICE_URL.getName(), URI.create(ServiceUrlParam));
 		
 		/* Define SERVICE_URL parameter */
         String EchoProcessIdParam = params.get(TestRunArg.ECHO_PROCESS_ID.toString());
@@ -136,8 +136,9 @@ public class SuiteFixtureListener implements ISuiteListener {
         
         if (TestSuiteLogger.isLoggable(Level.FINE)) {
             StringBuilder logMsg = new StringBuilder("Parsed resource retrieved from ");
-            logMsg.append(iutRef).append("\n");
-            logMsg.append(XMLUtils.writeNodeToString(iutDoc));
+            //logMsg.append(iutRef).append("\n");
+            //logMsg.append(XMLUtils.writeNodeToString(iutDoc));
+            logMsg.append(ServiceUrlParam).append("\n");
             TestSuiteLogger.log(Level.FINE, logMsg.toString());
         }
     }

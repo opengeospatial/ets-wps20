@@ -10,13 +10,14 @@ public enum TestRunArg {
      * metadata about it.
      */
     IUT,
-	SERVICE_URL,
-	ECHO_PROCESS_ID,
+	ECHO_PROCESS_ID
+	/*SERVICE_URL,
 	GC_XML_URI,
 	DP_XML_URI,
 	EX_SNC_XML_URI,
 	EX_ANC_XML_URI,
-	EX_ATO_XML_URI;
+	EX_ATO_XML_URI*/
+	;
 
     @Override
     public String toString() {
