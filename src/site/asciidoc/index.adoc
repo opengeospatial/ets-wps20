@@ -18,6 +18,11 @@ Support for the following conformance classes is tested:
 * Synchronous WPS 
 * Asynchronous WPS
 
+To quality for Compliance certification, a product has to:
+
+* Pass both the Basic and Synchronous WPS tests, or
+* Pass both the Basic and Asynchronous WPS tests
+
 == Test requirements
 
 The documents listed below stipulate requirements that must be satisfied by a 

@@ -40,6 +40,11 @@
                  <li>Synchronous WPS</li>
                  <li>Asynchronous WPS</li>
                </ul>
+               <p>To quality for Compliance certification, a product has to:</p>
+               <ul>
+                 <li>Pass both the Basic and Synchronous WPS tests, or</li>
+                 <li>Pass both the Basic and Asynchronous WPS tests</li>
+               </ul>               
              </div>
              <fieldset style="background:#ccffff">
                <legend style="font-family: sans-serif; color: #000099; 
@@ -47,15 +52,9 @@
                        border-width: medium; padding:4px">Implementation under test</legend>
                <p>
                  <label for="uri">
-                   <h4 style="margin-bottom: 0.5em">Location of IUT (absolute http: or file: URI)</h4>
+                   <h4 style="margin-bottom: 0.5em">Location of IUT (absolute http: URI)</h4>
                  </label>
                  <input id="uri" name="uri" size="128" type="text" value="https://geoprocessing.demo.52north.org/javaps/service" />
-               </p>
-			   <p>
-                 <label for="service_url">
-                   <h4 style="margin-bottom: 0.5em">Endpoint for testing WPS Service</h4>
-                 </label>
-                 <input id="service_url" name="service_url" size="128" type="text" value="https://geoprocessing.demo.52north.org/javaps/service" />
                </p>
 			   <p>
                  <label for="echo_process_id">
@@ -105,9 +104,6 @@
             <xsl:value-of select="normalize-space($form-data/values/value[@key='uri'])"/>
           </entry>
           <entry key="ICS"><xsl:value-of select="$form-data/values/value[@key='level']"/></entry>
-		  <entry key="SERVICE_URL">
-            <xsl:value-of select="normalize-space($form-data/values/value[@key='service_url'])"/>
-          </entry>
 		  <entry key="ECHO_PROCESS_ID">
             <xsl:value-of select="normalize-space($form-data/values/value[@key='echo_process_id'])"/>
           </entry>
