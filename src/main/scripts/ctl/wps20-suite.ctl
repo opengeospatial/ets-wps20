@@ -40,6 +40,11 @@
                  <li>Synchronous WPS</li>
                  <li>Asynchronous WPS</li>
                </ul>
+               <p>To quality for Compliance certification, a product has to:</p>
+               <ul>
+                 <li>Pass both the Basic and Synchronous WPS tests, or</li>
+                 <li>Pass both the Basic and Asynchronous WPS tests</li>
+               </ul>               
              </div>
              <fieldset style="background:#ccffff">
                <legend style="font-family: sans-serif; color: #000099; 
