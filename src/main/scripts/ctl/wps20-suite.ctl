@@ -71,11 +71,11 @@
                  <input name="doc" id="doc" size="128" type="file" />
                </p>
 			   -->
-               <p>
+               <!--p>
                  <label for="level">Conformance class: </label>
                  <input id="level-1" type="radio" name="level" value="1" checked="checked" />
                  <label for="level-1"> Level 1 | </label>
-               </p>
+               </p-->
              </fieldset>
              <p>
                <input class="form-button" type="submit" value="Start"/> | 

@@ -10,14 +10,19 @@
     <listener class-name="org.opengis.cite.wps20.TestFailureListener" />
   </listeners>
 
-  <test name="Conformance Level 1">
+  <test name="BasicTests">
     <packages>
-      <!-- This one need to turn off to avoid run unrequired classes -->
-      <!-- <package name="org.opengis.cite.wps20.level1" /> -->
+      <package name="org.opengis.cite.wps20.basictests" />
     </packages>
-    <classes>
-      <class name="org.opengis.cite.wps20.level1.BasicTests" />
-    </classes>
   </test>
-  <!-- Add test sets for other conformance classes/levels -->
+  <test name="Synchronous">
+    <packages>
+      <package name="org.opengis.cite.wps20.synchronous" />
+    </packages>
+  </test>
+  <test name="Asynchronous">
+    <packages>
+      <package name="org.opengis.cite.wps20.asynchronous" />
+    </packages>
+  </test>
 </suite>
