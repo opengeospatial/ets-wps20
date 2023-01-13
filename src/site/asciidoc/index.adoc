@@ -76,11 +76,6 @@ The _Obligation_ descriptor can have the following values: M (mandatory), O (opt
 |M
 |A URI that refers to the implementation under test or metadata about it. Ampersand ('&amp;') characters must be percent-encoded as '%26'.
 
-|SERVICE_URL
-|URI
-|M
-|A URI that refers to the implementation under test or metadata about it. Ampersand ('&amp;') characters must be percent-encoded as '%26'. Currently simply set this argument the same value with IUT.
-
 |ECHO_PROCESS_ID
 |A string value.
 |M
