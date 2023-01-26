@@ -1,3 +1,5 @@
 org.opengis.cite.wps20
-org.opengis.cite.wps20.level1
+org.opengis.cite.wps20.asynchronous
+org.opengis.cite.wps20.basictests
+org.opengis.cite.wps20.synchronous
 org.opengis.cite.wps20.util
