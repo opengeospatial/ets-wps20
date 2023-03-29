@@ -8,9 +8,7 @@
     <ows:Identifier>example.id</ows:Identifier>
 	<wps:Input id="example.input.id">
         <wps:Data>
-            <wps:ComplexData>
                 <testElement>hello_complex</testElement>
-            </wps:ComplexData>
         </wps:Data>
     </wps:Input>
     <wps:Output id="example.output.id" transmission="value" />
