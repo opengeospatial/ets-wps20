@@ -63,21 +63,7 @@ import net.sf.saxon.s9api.XdmValue;*/
 import org.opengis.cite.wps20.util.*;
 
 public class SyncTests extends CommonFixture {
-
-	String GET_CAPABILITIES_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/GetCapabilities.xml";
-	String DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/DescribeProcess.xml";
-	String LITERAL_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Literal.xml";
-	String COMPLEX_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Complex.xml";
-
 	
-	String INPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidInputValue.xml";
-	String INPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidInputReference.xml";
-	String OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputValue.xml";
-	String OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputReference.xml";
-	String UNIQUE_JOB_IDS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidUniqueJobIds.xml";
-	String GET_STATUS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetStatus.xml";
-	String GET_RESULT_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetResult.xml";
-
 	/**
 	 * A.5.11. Verify that the server can handle the execution mode 'synchronous'
 	 * requested via POST/XML Flow of Test Description: Send a valid XML Execute
@@ -89,12 +75,7 @@ public class SyncTests extends CommonFixture {
 	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.11. Verify that the server can handle the execution mode 'synchronous' requested via POST/XML.")
 	public void ValidSyncExcecuteViaPOSTXML() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
-
-		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
-		Document literalDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
-
-		// Process Literal Request
-		ProcessEchoProcessLiteralDataRequest(SERVICE_URL, literalDocument);
+		Document literalDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
 
 		// Response document
 		Element executeElement = (Element) literalDocument
@@ -159,68 +140,4 @@ public class SyncTests extends CommonFixture {
 		 */
 	}
 	
-	public void ProcessEchoProcessLiteralDataRequest(String SERVICE_URL, Document SEPDocument) {
-		// Get the processid from user and replace the processid in the template xml
-		// request file
-		String ECHO_PROCESS_ID = this.EchoProcessId;
-
-		// Parse the input id and output id in DescribeProcess
-		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
-		DP_Parameters.put("Service", "WPS");
-		DP_Parameters.put("Version", "2.0.0");
-		DP_Parameters.put("Request", "DescribeProcess");
-		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
-		String responseDescribeProcess = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
-		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
-
-		// get input id
-		NodeList inputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0",
-				"Input");
-		String literalInputId = "", literalOutputId = "", complexInputId = "", complexOutputId = "";
-		for (int i = 0; i < inputList.getLength(); i++) {
-			Element element = (Element) inputList.item(i);
-			Element literalInputElement = (Element) element
-					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
-			Element complexInputElement = (Element) element
-					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
-			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0)
-					.getTextContent();
-			if (literalInputElement != null) {
-				literalInputId = Id;
-			} else if (complexInputElement != null) {
-				complexInputId = Id;
-			}
-		}
-
-		// get output id
-		NodeList outputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0",
-				"Output");
-		for (int i = 0; i < outputList.getLength(); i++) {
-			Element element = (Element) outputList.item(i);
-			Element literalOutputElement = (Element) element
-					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
-			Element complexOutputElement = (Element) element
-					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
-			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0)
-					.getTextContent();
-			if (literalOutputElement != null) {
-				literalOutputId = Id;
-			} else if (complexOutputElement != null) {
-				complexOutputId = Id;
-			}
-		}
-
-		// Test LiteralData
-		Element requestInputElement = (Element) SEPDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input").item(0);
-		Element requestOutputElement = (Element) SEPDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Output").item(0);
-		Element requestIdElement = (Element) SEPDocument
-				.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0);
-		// replace id
-		requestIdElement.setTextContent(ECHO_PROCESS_ID);
-		requestInputElement.setAttribute("id", literalInputId);
-		requestOutputElement.setAttribute("id", literalOutputId);
-	}	
-
 }
