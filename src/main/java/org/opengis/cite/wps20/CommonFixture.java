@@ -7,9 +7,11 @@ import com.sun.jersey.api.client.ClientResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.xml.transform.OutputKeys;
@@ -19,13 +21,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
 
+import org.opengis.cite.wps20.basictests.BasicTests;
 import org.opengis.cite.wps20.util.ClientUtils;
+import org.opengis.cite.wps20.util.URIUtils;
 import org.testng.ITestContext;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * A supporting base class that sets up a common test fixture. These
@@ -55,9 +62,24 @@ public class CommonFixture {
     /* Define Arguments */
     protected String EchoProcessId;
     
-    //protected Document GcXmlUri;
+    protected String LITERAL_INPUT_ID;
+    protected String LITERAL_OUTPUT_ID;
+    protected String COMPLEX_INPUT_ID;
+    protected String COMPLEX_OUTPUT_ID;
     
-    //protected Document DpXmlUri;
+    protected String GET_CAPABILITIES_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/GetCapabilities.xml";
+    protected String DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/DescribeProcess.xml";
+    protected String LITERAL_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Literal.xml";
+    protected String COMPLEX_REQUEST_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/Echo_Process_Complex.xml";
+
+	
+    protected String INPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidInputValue.xml";
+    protected String INPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidInputReference.xml";
+	protected String OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputValue.xml";
+	protected String OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidOutputReference.xml";
+	protected String UNIQUE_JOB_IDS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidUniqueJobIds.xml";
+	protected String GET_STATUS_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetStatus.xml";
+	protected String GET_RESULT_TEMPLATE_PATH = "/org/opengis/cite/wps20/examples/ValidGetResult.xml";
 
     /**
      * Initializes the common test fixture with a client component for 
@@ -67,7 +89,7 @@ public class CommonFixture {
      * a test run, including suite attributes.
      */
     @BeforeClass
-    public void initCommonFixture(ITestContext testContext) {
+    public void initCommonFixture(ITestContext testContext) throws Exception {
         Object obj = testContext.getSuite().getAttribute(SuiteAttribute.CLIENT.getName());
         if (null != obj) {
             this.client = Client.class.cast(obj);
@@ -91,21 +113,7 @@ public class CommonFixture {
             System.out.println("WPS 2.0 ECHO PROCESS ID: " + this.EchoProcessId.toString());        	
         }
         
-        /*
-        //Define GC_XML_URI parameter
-        Object GcXmlUriObj = testContext.getSuite().getAttribute(SuiteAttribute.GC_XML_URI.getName());
-        if((null != GcXmlUriObj) && Document.class.isAssignableFrom(GcXmlUriObj.getClass())) {
-        	this.GcXmlUri = Document.class.cast(GcXmlUriObj);
-        	System.out.println("WPS 2.0 GET CAPABILITIES POST/XML URL LOADED");  
-        }
-        
-        //Define DP_XML_URI parameter
-        Object DpXmlUriObj = testContext.getSuite().getAttribute(SuiteAttribute.DP_XML_URI.getName());
-        if((null != DpXmlUriObj) && Document.class.isAssignableFrom(DpXmlUriObj.getClass())) {
-        	this.DpXmlUri = Document.class.cast(DpXmlUriObj);
-        	System.out.println("WPS 2.0 DESCRIBE PROCESS POST/XML URL LOADED");  
-        }
-        */
+        GetEchoProcessInputIdAndOutputId();
     }
 
     @BeforeMethod
@@ -114,6 +122,74 @@ public class CommonFixture {
         this.response = null;
     }
 
+    public void GetEchoProcessInputIdAndOutputId() throws URISyntaxException, SAXException, IOException {
+    	String SERVICE_URL = this.ServiceUrl.toString();
+    	// Get the processid from user and replace the processid in the template xml
+		// request file
+		String ECHO_PROCESS_ID = this.EchoProcessId;
+		
+		
+		// Parse the input id and output id in DescribeProcess
+		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
+		DP_Parameters.put("Service", "WPS");
+		DP_Parameters.put("Version", "2.0.0");
+		DP_Parameters.put("Request", "DescribeProcess");
+		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
+		String responseDescribeProcess = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
+		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
+
+		// get input id
+		NodeList inputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0",
+				"Input");
+		String literalInputId = "", literalOutputId = "", complexInputId = "", complexOutputId = "";
+		for (int i = 0; i < inputList.getLength(); i++) {
+			Element element = (Element) inputList.item(i);
+			Element literalInputElement = (Element) element
+					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
+			Element dataTypeInputElement = (Element) element
+					.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "DataType").item(0);
+			Element complexInputElement = (Element) element
+					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
+			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0)
+					.getTextContent();
+			if (literalInputElement != null && dataTypeInputElement != null) {
+				//check if DataType accepts string
+				if (dataTypeInputElement.getTextContent().toLowerCase().equals("string"))
+					literalInputId = Id;
+				
+			} else if (complexInputElement != null) {
+				complexInputId = Id;
+			}
+		}
+
+		// get output id
+		NodeList outputList = responseDescribeProcessDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0",
+				"Output");
+		for (int i = 0; i < outputList.getLength(); i++) {
+			Element element = (Element) outputList.item(i);
+			Element literalOutputElement = (Element) element
+					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").item(0);
+			Element dataTypeOutputElement = (Element) element
+					.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "DataType").item(0);
+			Element complexOutputElement = (Element) element
+					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").item(0);
+			String Id = element.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0)
+					.getTextContent();
+			if (literalOutputElement != null && dataTypeOutputElement != null) {
+				//check if DataType accepts string
+				if (dataTypeOutputElement.getTextContent().toLowerCase().equals("string"))
+					literalOutputId = Id;
+			} else if (complexOutputElement != null) {
+				complexOutputId = Id;
+			}
+		}
+		
+		LITERAL_INPUT_ID = literalInputId;
+		LITERAL_OUTPUT_ID = literalOutputId;
+		COMPLEX_INPUT_ID = complexInputId;
+		COMPLEX_OUTPUT_ID = complexOutputId;
+    }
+    
     /**
      * Obtains the (XML) response entity as a DOM Document. This convenience
      * method wraps a static method call to facilitate unit testing (Mockito
@@ -159,7 +235,10 @@ public class CommonFixture {
 		StringBuilder sb = new StringBuilder();
 		HttpURLConnection urlConn = null;
 		InputStreamReader in = null;
+		String xml = "";
 		try {
+			xml = TransformXMLDocumentToXMLString(xml_doc);
+			System.out.println(xml);
 			Transformer tf = TransformerFactory.newInstance().newTransformer();
 			tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			tf.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -188,7 +267,11 @@ public class CommonFixture {
 				}
 			}
 			in.close();
+			//System.out.println(xml);
+			
 		} catch (Exception e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
 			throw new RuntimeException("Exception while calling URL:" + any_url, e);
 		}
 		return sb.toString();
@@ -295,5 +378,21 @@ public class CommonFixture {
 	public HttpURLConnection GetConnection(String serviceURL) throws IOException {
 		URL urlObj = new URL(serviceURL);
 		return (HttpURLConnection) urlObj.openConnection();
-	}  
+	}
+	
+	public Document GetDocumentTemplate(String templatePath, String processId, String inputId, String outputId) throws URISyntaxException, SAXException, IOException {
+		URI uriLiteralRequestTemplate = BasicTests.class.getResource(templatePath).toURI();
+		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
+		Element requestInputElement = (Element) SEPDocument
+				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input").item(0);
+		Element requestOutputElement = (Element) SEPDocument
+				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Output").item(0);
+		Element requestIdElement = (Element) SEPDocument
+				.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0);
+		// replace id
+		requestIdElement.setTextContent(processId);
+		requestInputElement.setAttribute("id", inputId);
+		requestOutputElement.setAttribute("id", outputId);
+		return SEPDocument;
+	}
 }
