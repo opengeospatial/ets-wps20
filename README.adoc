@@ -37,26 +37,6 @@ The options for running the suite are summarized in
 
 include::src/site/asciidoc/how-to-run-the-tests.adoc[]
 
-== How to debug using docker
-
-After running `mvn package`:
-
-Navigate to the docker folder.
-
-`cd /docker`
-
-Build the docker image.
-
-`docker build -t wps20:local . `
-
-Run the docker image.
-
-`docker run -p 9090:8080/tcp wps20:local`
-
-Now visit http://localhost:9090/teamengine
-
-Log into teamengine with username *developer* and password *developer*.
-
 == How to contribute
 
 If you would like to get involved, you can:
