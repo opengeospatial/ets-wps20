@@ -1,5 +1,9 @@
 = Release Notes
 
+== 1.0 (2023-10-12)
+* [#42](https://github.com/opengeospatial/ets-wps20/pull/42) Set status of test suite to Final
+* [#40](https://github.com/opengeospatial/ets-wps20/issues/40) Invalid README build steps
+
 == 0.4 (2023-08-19)
 * [#32](https://github.com/opengeospatial/ets-wps20/issues/32) Execute requests seem to be wrong
 * [#33](https://github.com/opengeospatial/ets-wps20/issues/33) Why using a not found URL when passing input by reference
