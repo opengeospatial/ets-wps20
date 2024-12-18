@@ -25,7 +25,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.glassfish.jersey.client.ClientRequest;
-import org.glassfish.jersey.client.ClientResponse;
 import org.opengis.cite.wps20.basictests.BasicTests;
 import org.opengis.cite.wps20.util.ClientUtils;
 import org.opengis.cite.wps20.util.URIUtils;

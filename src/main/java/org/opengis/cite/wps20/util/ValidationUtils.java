@@ -21,10 +21,9 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
 import org.apache.xerces.util.XMLCatalogResolver;
-import org.opengis.cite.wps20.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
 import org.opengis.cite.validation.XmlSchemaCompiler;
-import org.opengis.cite.wps20.util.ValidationUtils;
+import org.opengis.cite.wps20.Namespaces;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 

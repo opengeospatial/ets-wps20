@@ -1,57 +1,17 @@
 package org.opengis.cite.wps20.asynchronous;
 
-import static org.testng.Assert.assertTrue;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
 import java.net.URI;
 //import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-//import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 //import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Random;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-//import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.Validator;
 
 //import org.opengis.cite.wps20.Namespaces;
 //import org.opengis.cite.wps20.SuiteAttribute;
 import org.opengis.cite.wps20.CommonFixture;
 import org.opengis.cite.wps20.basictests.BasicTests;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-//import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /*import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -59,8 +19,12 @@ import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;*/
-
-import org.opengis.cite.wps20.util.*;
+import org.opengis.cite.wps20.util.URIUtils;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * <p>
