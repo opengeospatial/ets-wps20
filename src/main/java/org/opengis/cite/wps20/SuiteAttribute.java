@@ -1,11 +1,11 @@
 package org.opengis.cite.wps20;
 
-import com.sun.jersey.api.client.Client;
-
 import java.io.File;
 import java.net.URI;
 
 import org.w3c.dom.Document;
+
+import jakarta.ws.rs.client.Client;
 
 /**
  * An enumerated type defining ISuite attributes that may be set to constitute a

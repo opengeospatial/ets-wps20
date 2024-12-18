@@ -4,7 +4,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.testng.ISuite;
 import org.testng.xml.XmlSuite;
 
@@ -66,8 +65,8 @@ public class VerifySuiteFixtureListener {
         SuiteFixtureListener iut = new SuiteFixtureListener();
         iut.onStart(suite);
         verify(suite).setAttribute(
-                Matchers.eq(SuiteAttribute.SERVICE_URL.getName()), 
-                Matchers.isA(URI.class));
+                ArgumentMatchers.eq(SuiteAttribute.SERVICE_URL.getName()), 
+                ArgumentMatchers.isA(URI.class));
     }
 
 }

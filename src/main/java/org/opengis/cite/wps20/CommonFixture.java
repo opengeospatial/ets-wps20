@@ -1,10 +1,12 @@
 package org.opengis.cite.wps20;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientRequest;
-import com.sun.jersey.api.client.ClientResponse;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,19 +15,21 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.ws.rs.core.MediaType;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
+import org.glassfish.jersey.client.ClientRequest;
+import org.glassfish.jersey.client.ClientResponse;
 import org.opengis.cite.wps20.basictests.BasicTests;
 import org.opengis.cite.wps20.util.ClientUtils;
 import org.opengis.cite.wps20.util.URIUtils;
 import org.testng.ITestContext;
-import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.w3c.dom.Document;
@@ -33,6 +37,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * A supporting base class that sets up a common test fixture. These
@@ -55,7 +63,7 @@ public class CommonFixture {
     /**
      * An HTTP response message.
      */
-    protected ClientResponse response;
+    protected Response response;
     
     protected URI ServiceUrl;
     
@@ -202,7 +210,7 @@ public class CommonFixture {
      *
      * @see ClientUtils#getResponseEntityAsDocument
      */
-    public Document getResponseEntityAsDocument(ClientResponse response,
+    public Document getResponseEntityAsDocument(Response response,
             String targetURI) {
         return ClientUtils.getResponseEntityAsDocument(response, targetURI);
     }
@@ -216,11 +224,11 @@ public class CommonFixture {
      * @param qryParams A Map containing query parameters (may be null);
      * @param mediaTypes A list of acceptable media types; if not specified,
      * generic XML ("application/xml") is preferred.
-     * @return A ClientRequest object.
+     * @return A Response object.
      *
      * @see ClientUtils#buildGetRequest
      */
-    public ClientRequest buildGetRequest(URI endpoint,
+    public Response buildGetRequest(URI endpoint,
             Map<String, String> qryParams, MediaType... mediaTypes) {
         return ClientUtils.buildGetRequest(endpoint, qryParams, mediaTypes);
     }
