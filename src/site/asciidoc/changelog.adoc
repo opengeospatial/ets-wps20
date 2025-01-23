@@ -1,6 +1,9 @@
 = Release Notes
 
 == 1.1 (2025-01-23)
+
+Attention: Java 17 and Tomcat 10.1 are required.
+
 * [#43](https://github.com/opengeospatial/ets-wps20/issues/43) Migrate test suite to TEAM Engine 6 (Java 17)
 
 == 1.0 (2023-10-12)
