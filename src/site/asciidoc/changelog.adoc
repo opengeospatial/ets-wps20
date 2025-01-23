@@ -1,5 +1,8 @@
 = Release Notes
 
+== 1.1 (2025-01-23)
+* [#43](https://github.com/opengeospatial/ets-wps20/issues/43) Migrate test suite to TEAM Engine 6 (Java 17)
+
 == 1.0 (2023-10-12)
 * [#42](https://github.com/opengeospatial/ets-wps20/pull/42) Set status of test suite to Final
 * [#40](https://github.com/opengeospatial/ets-wps20/issues/40) Invalid README build steps
