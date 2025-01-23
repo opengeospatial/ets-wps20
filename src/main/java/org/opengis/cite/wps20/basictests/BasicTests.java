@@ -2,14 +2,9 @@ package org.opengis.cite.wps20.basictests;
 
 import static org.testng.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URI;
 //import java.net.URI;
@@ -17,24 +12,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 //import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 //import java.util.ArrayList;
 //import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 //import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Random;
+import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-//import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -42,16 +28,6 @@ import javax.xml.validation.Validator;
 //import org.opengis.cite.wps20.Namespaces;
 //import org.opengis.cite.wps20.SuiteAttribute;
 import org.opengis.cite.wps20.CommonFixture;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-//import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /*import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -59,28 +35,41 @@ import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;*/
+import org.opengis.cite.wps20.util.URIUtils;
+import org.opengis.cite.wps20.util.ValidationUtils;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import org.opengis.cite.wps20.util.*;
-
+/**
+ * <p>
+ * BasicTests class.
+ * </p>
+ *
+ */
 public class BasicTests extends CommonFixture {
-	
+
 	/**
-	 * A.4.1. Verify that a given process description is in compliance with the
-Process XML encoding. Verify that the tested document fulfils all requirements listed in
-req/native-process/xml-encoding/process. 
-	 * 
+	 * A.4.1. Verify that a given process description is in compliance with the Process
+	 * XML encoding. Verify that the tested document fulfils all requirements listed in
+	 * req/native-process/xml-encoding/process.
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, dependsOnMethods = {}, groups = "A.4. WPS Process Model Encoding", description = "A.4.1. Verify that a given process description is in compliance with the Process XML encoding")
-	private void VerifyProcessXMLEncoding() throws IOException, URISyntaxException, SAXException 	{
+	@Test(enabled = true, dependsOnMethods = {}, groups = "A.4. WPS Process Model Encoding",
+			description = "A.4.1. Verify that a given process description is in compliance with the Process XML encoding")
+	private void VerifyProcessXMLEncoding() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
 		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
 		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
 		String ECHO_PROCESS_ID = this.EchoProcessId;
-		
+
 		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
 		DP_Parameters.put("Service", "WPS");
 		DP_Parameters.put("Version", "2.0.0");
@@ -93,27 +82,29 @@ req/native-process/xml-encoding/process.
 			VPE_Flag = true;
 			String msg = "Valid Process XML Encoding for WPS 2.0";
 			Assert.assertTrue(VPE_Flag, msg);
-		} else {
+		}
+		else {
 			VPE_Flag = false;
 			String msg = "Invalid Process XML Encoding for WPS 2.0";
 			Assert.assertTrue(VPE_Flag, msg);
 		}
 	}
-	
+
 	/**
-	 * A.4.3. Verify that a given process description is in compliance with the
-Process XML encoding. Verify that the tested document fulfills all requirements listed in
-req/native-process/xml-encoding/process. 
-	 * @throws Exception 
+	 * A.4.3. Verify that a given process description is in compliance with the Process
+	 * XML encoding. Verify that the tested document fulfills all requirements listed in
+	 * req/native-process/xml-encoding/process.
+	 * @throws Exception
 	 */
-	@Test(enabled = true, dependsOnMethods = {}, groups = "A.4. WPS Process Model Encoding", description = "A.4.3. Verify that any XML data type description and values that are used in conjunction with the native process model are encoded in compliance with the process model XML encoding.")
+	@Test(enabled = true, dependsOnMethods = {}, groups = "A.4. WPS Process Model Encoding",
+			description = "A.4.3. Verify that any XML data type description and values that are used in conjunction with the native process model are encoded in compliance with the process model XML encoding.")
 	private void VerifyProcessDataTypeXMLEncoding() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
 		URI uriLiteralRequestTemplate = BasicTests.class.getResource(LITERAL_REQUEST_TEMPLATE_PATH).toURI();
 		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
 		String ECHO_PROCESS_ID = this.EchoProcessId;
-		
+
 		Map<String, Object> DP_Parameters = new LinkedHashMap<>();
 		DP_Parameters.put("Service", "WPS");
 		DP_Parameters.put("Version", "2.0.0");
@@ -121,66 +112,74 @@ req/native-process/xml-encoding/process.
 		DP_Parameters.put("Identifier", ECHO_PROCESS_ID);
 		String VPE_String = GetContentFromGETKVPRequest(SERVICE_URL, DP_Parameters);
 		Document VPE_Document = TransformXMLStringToXMLDocument(VPE_String);
-		
+
 		Boolean HLCB_Flag = true;
-		
-		if(VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").getLength() == 0) {
+
+		if (VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "LiteralData").getLength() == 0) {
 			HLCB_Flag = false;
 		}
-		
-		if(VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").getLength() == 0) {
+
+		if (VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ComplexData").getLength() == 0) {
 			HLCB_Flag = false;
 		}
-		
-		if(VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "BoundingBoxData").getLength() == 0) {
+
+		if (VPE_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "BoundingBoxData").getLength() == 0) {
 			HLCB_Flag = false;
 		}
-				
-		if(HLCB_Flag) { 	
+
+		if (HLCB_Flag) {
 			Boolean VPE_Flag = null;
 			String msg = null;
-			
+
 			if (isXMLSchemaValid(VPE_String, "xsd/opengis/wps/2.0/wps.xsd")) {
 				VPE_Flag = true;
 				msg = "Valid Process DataTypes XML Encoding for WPS 2.0";
-			} else {
+			}
+			else {
 				VPE_Flag = false;
 				msg = "Invalid Process DataTypes XML Encoding for WPS 2.0";
 			}
-			
+
 			Assert.assertTrue(VPE_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "The process should include ComplexData, LiteralData and BoundingBoxData";
 			Assert.assertTrue(HLCB_Flag, msg);
 		}
 	}
-	
+
 	/**
-	 * Precondition. Verify that the server can handle echo process
-	 * Flow of Test Description - Step 1: Send a valid DescribeProcess request to the server under test, setting the identifier to the echo process id. Verify that the server offers an echo process.
-	 * Flow of Test Description - Step 2: Send a valid Execute request to the server under test, setting the identifier to the echo process id. Verify that the server can handle echo process.
+	 * Precondition. Verify that the server can handle echo process Flow of Test
+	 * Description - Step 1: Send a valid DescribeProcess request to the server under
+	 * test, setting the identifier to the echo process id. Verify that the server offers
+	 * an echo process. Flow of Test Description - Step 2: Send a valid Execute request to
+	 * the server under test, setting the identifier to the echo process id. Verify that
+	 * the server can handle echo process.
+	 * @throws java.lang.Exception if any.
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "Precondition: Verify that the server can handle echo process")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "Precondition: Verify that the server can handle echo process")
 	public void ValidEchoProcess() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
 		// Get the processid from user and replace the processid in the template xml
 		// request file
 		String ECHO_PROCESS_ID = this.EchoProcessId;
-		
-		
+
 		// Test LiteralData
-		Document SEPDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, ECHO_PROCESS_ID, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document SEPDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, ECHO_PROCESS_ID, LITERAL_INPUT_ID,
+				LITERAL_OUTPUT_ID);
 		String resultLiteral = GetContentFromPOSTXMLRequest(SERVICE_URL, SEPDocument);
-		//System.out.println("【Test LiteralData】\n" + resultLiteral);
+		// System.out.println("【Test LiteralData】\n" + resultLiteral);
 		String msgLiteral = "Echo Process LiteralData Test Failed";
 		// Check the response string is equal to hello_literal(hello_literal is defined
 		// in file from LITERAL_REQUEST_TEMPLATE_PATH)
 		Assert.assertTrue(resultLiteral.contains("hello_literal"), msgLiteral);
 
 		// Test ComplexData
-		SEPDocument = GetDocumentTemplate(COMPLEX_REQUEST_TEMPLATE_PATH, ECHO_PROCESS_ID, COMPLEX_INPUT_ID, COMPLEX_OUTPUT_ID);
+		SEPDocument = GetDocumentTemplate(COMPLEX_REQUEST_TEMPLATE_PATH, ECHO_PROCESS_ID, COMPLEX_INPUT_ID,
+				COMPLEX_OUTPUT_ID);
 		String responseComplex = GetContentFromPOSTXMLRequest(SERVICE_URL, SEPDocument);
-		//System.out.println("【Test ComplexData】\n" + responseComplex);
+		// System.out.println("【Test ComplexData】\n" + responseComplex);
 		Document complexOutputDocument = TransformXMLStringToXMLDocument(responseComplex);
 		String resultComplex = complexOutputDocument.getElementsByTagName("testElement").item(0).getTextContent();
 		String msgComplex = "Echo Process ComplexData Test Failed";
@@ -188,16 +187,21 @@ req/native-process/xml-encoding/process.
 		// is defined in file from COMPLEX_REQUEST_TEMPLATE_PATH)
 		Assert.assertTrue(resultComplex.equals("hello_complex"), msgComplex);
 	}
-	
-	public Document GetDocumentTemplate(String templatePath, String processId, String inputId, String outputId) throws URISyntaxException, SAXException, IOException {
+
+	/** {@inheritDoc} */
+	public Document GetDocumentTemplate(String templatePath, String processId, String inputId, String outputId)
+			throws URISyntaxException, SAXException, IOException {
 		URI uriLiteralRequestTemplate = BasicTests.class.getResource(templatePath).toURI();
 		Document SEPDocument = URIUtils.parseURI(uriLiteralRequestTemplate);
 		Element requestInputElement = (Element) SEPDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input").item(0);
+			.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Input")
+			.item(0);
 		Element requestOutputElement = (Element) SEPDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Output").item(0);
+			.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Output")
+			.item(0);
 		Element requestIdElement = (Element) SEPDocument
-				.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0);
+			.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier")
+			.item(0);
 		// replace id
 		requestIdElement.setTextContent(processId);
 		requestInputElement.setAttribute("id", inputId);
@@ -206,16 +210,16 @@ req/native-process/xml-encoding/process.
 	}
 
 	/**
-	 * A.5.1. Verify that the correctly handles the service name parameter Flow of
-	 * Test Description: Send a parameter value equal to what is required. Verify
-	 * that request succeeds. Send a parameter value not equal to what is required.
-	 * Verify that request fails. Overall test passes if all individual tests pass.
-	 * 
+	 * A.5.1. Verify that the correctly handles the service name parameter Flow of Test
+	 * Description: Send a parameter value equal to what is required. Verify that request
+	 * succeeds. Send a parameter value not equal to what is required. Verify that request
+	 * fails. Overall test passes if all individual tests pass.
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, dependsOnMethods = {}, groups = "A.5. Basic Tests", description = "A.5.1. Verify that the correctly handles the service name parameter.")
+	@Test(enabled = true, dependsOnMethods = {}, groups = "A.5. Basic Tests",
+			description = "A.5.1. Verify that the correctly handles the service name parameter.")
 	private void ValidServiceName() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
@@ -234,7 +238,8 @@ req/native-process/xml-encoding/process.
 			GC_Flag = true;
 			String msg = "Valid Service Name for WPS 2.0";
 			Assert.assertTrue(GC_Flag, msg);
-		} else {
+		}
+		else {
 			GC_Flag = false;
 			String msg = "Invalid Service Name for WPS 2.0";
 			Assert.assertTrue(GC_Flag, msg);
@@ -242,16 +247,16 @@ req/native-process/xml-encoding/process.
 	}
 
 	/**
-	 * A.5.2. Verify that the correctly handles the service version parameter Flow
-	 * of Test Description: Send a parameter value equal to what is required. Verify
-	 * that request succeeds. Send a parameter value not equal to what is required.
-	 * Verify that request fails. Overall test passes if all individual tests pass.
-	 * 
+	 * A.5.2. Verify that the correctly handles the service version parameter Flow of Test
+	 * Description: Send a parameter value equal to what is required. Verify that request
+	 * succeeds. Send a parameter value not equal to what is required. Verify that request
+	 * fails. Overall test passes if all individual tests pass.
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.2. Verify that the correctly handles the service version parameter.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.2. Verify that the correctly handles the service version parameter.")
 	private void ValidServiceVersion() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
@@ -270,7 +275,8 @@ req/native-process/xml-encoding/process.
 			GC_Flag = true;
 			String msg = "Valid Service Version for WPS 2.0";
 			Assert.assertTrue(GC_Flag, msg);
-		} else {
+		}
+		else {
 			GC_Flag = false;
 			String msg = "Invalid Service Version for WPS 2.0";
 			Assert.assertTrue(GC_Flag, msg);
@@ -278,17 +284,18 @@ req/native-process/xml-encoding/process.
 	}
 
 	/**
-	 * A.5.3. Verify that the server correctly handles input data transmission by
-	 * value. Flow of Test Description: Send Execute requests to the server under
-	 * test with valid inputs passed by value. Test passed if the execution finishes
-	 * successfully.
-	 * @throws Exception 
+	 * A.5.3. Verify that the server correctly handles input data transmission by value.
+	 * Flow of Test Description: Send Execute requests to the server under test with valid
+	 * inputs passed by value. Test passed if the execution finishes successfully.
+	 * @throws Exception
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.3. Verify that the server correctly handles input data transmission by value.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.3. Verify that the server correctly handles input data transmission by value.")
 	private void ValidInputDataTranmissionByValue() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
-		Document InputValueDocument = GetDocumentTemplate(INPUT_VALUE_TRANSMISSION_TEMPLATE_PATH, this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document InputValueDocument = GetDocumentTemplate(INPUT_VALUE_TRANSMISSION_TEMPLATE_PATH, this.EchoProcessId,
+				LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
 
 		String InputValueResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, InputValueDocument);
 		Document InputValueResponseDocument = TransformXMLStringToXMLDocument(InputValueResponse);
@@ -299,7 +306,8 @@ req/native-process/xml-encoding/process.
 		if (IVRD_Flag) {
 			String msg = "Valid Input Data Transmission by Value for WPS 2.0";
 			Assert.assertTrue(IVRD_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid Input Data Transmission by Value for WPS 2.0";
 			Assert.assertTrue(IVRD_Flag, msg);
 		}
@@ -307,16 +315,18 @@ req/native-process/xml-encoding/process.
 
 	/**
 	 * A.5.4. Verify that the server correctly handles input data transmission by
-	 * reference. Flow of Test Description: Send Execute requests to the server
-	 * under test with valid inputs passed by reference. Test passed if the
-	 * execution finishes successfully.
+	 * reference. Flow of Test Description: Send Execute requests to the server under test
+	 * with valid inputs passed by reference. Test passed if the execution finishes
+	 * successfully.
 	 * @throws Exception
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.4. Verify that the server correctly handles input data transmission by reference.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.4. Verify that the server correctly handles input data transmission by reference.")
 	private void ValidInputDataTranmissionByReference() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
-		Document InputReferenceDocument = GetDocumentTemplate(INPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH, this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document InputReferenceDocument = GetDocumentTemplate(INPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH,
+				this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
 
 		String InputReferenceResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, InputReferenceDocument);
 		System.out.println(InputReferenceResponse);
@@ -328,30 +338,31 @@ req/native-process/xml-encoding/process.
 		if (IRRD_Flag) {
 			String msg = "Valid Input Data Transmission by Reference for WPS 2.0";
 			Assert.assertTrue(IRRD_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid Input Data Transmission by Reference for WPS 2.0";
 			Assert.assertTrue(IRRD_Flag, msg);
 		}
 	}
 
 	/**
-	 * A.5.5. Verify that the server correctly handles output data transmission by
-	 * value. Flow of Test Description: Check the available process offerings for
-	 * outputs that can be retrieved by value. If there is an output that can be
-	 * retrieved by value, send an Execute request to the server requesting the
-	 * output by value. Test passes if a valid Execute response is returned
-	 * containing the requested output. Skip this test if no output can be retrieved
-	 * by value.
-	 * 
+	 * A.5.5. Verify that the server correctly handles output data transmission by value.
+	 * Flow of Test Description: Check the available process offerings for outputs that
+	 * can be retrieved by value. If there is an output that can be retrieved by value,
+	 * send an Execute request to the server requesting the output by value. Test passes
+	 * if a valid Execute response is returned containing the requested output. Skip this
+	 * test if no output can be retrieved by value.
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.5. Verify that the server correctly handles output data transmission by value.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.5. Verify that the server correctly handles output data transmission by value.")
 	private void ValidOutDataTranmissionByValue() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
-		Document OutputValueDocument = GetDocumentTemplate(OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH, this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document OutputValueDocument = GetDocumentTemplate(OUTPUT_VALUE_TRANSMISSION_TEMPLATE_PATH, this.EchoProcessId,
+				LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
 
 		String OutputValueResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, OutputValueDocument);
 		Document OutputValueResponseDocument = TransformXMLStringToXMLDocument(OutputValueResponse);
@@ -362,7 +373,8 @@ req/native-process/xml-encoding/process.
 		if (OVRD_Flag) {
 			String msg = "Valid Output Data Transmission by Value for WPS 2.0";
 			Assert.assertTrue(OVRD_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid Output Data Transmission by Value for WPS 2.0";
 			Assert.assertTrue(OVRD_Flag, msg);
 		}
@@ -370,19 +382,20 @@ req/native-process/xml-encoding/process.
 
 	/**
 	 * A.5.6. Verify that the server correctly handles output data transmission by
-	 * reference. Flow of Test Description: Check the available process offerings
-	 * for outputs that can be retrieved by value. If there is an output that can be
-	 * retrieved by value, send an Execute request to the server requesting the
-	 * output by reference. Test passes if a valid Execute response is returned
-	 * containing the requested output. Skip this test if no output can be retrieved
-	 * by reference.
-	 * @throws Exception 
+	 * reference. Flow of Test Description: Check the available process offerings for
+	 * outputs that can be retrieved by value. If there is an output that can be retrieved
+	 * by value, send an Execute request to the server requesting the output by reference.
+	 * Test passes if a valid Execute response is returned containing the requested
+	 * output. Skip this test if no output can be retrieved by reference.
+	 * @throws Exception
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.6. Verify that the server correctly handles output data transmission by reference.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.6. Verify that the server correctly handles output data transmission by reference.")
 	private void ValidOutDataTranmissionByReference() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
-		Document OutputReferenceDocument = GetDocumentTemplate(OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH, this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document OutputReferenceDocument = GetDocumentTemplate(OUTPUT_REFERENCE_TRANSMISSION_TEMPLATE_PATH,
+				this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
 
 		String OutputReferenceResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, OutputReferenceDocument);
 		System.out.println(OutputReferenceResponse);
@@ -394,22 +407,23 @@ req/native-process/xml-encoding/process.
 		if (ORRD_Flag) {
 			String msg = "Valid Output Data Transmission by Reference for WPS 2.0";
 			Assert.assertTrue(ORRD_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid Output Data Transmission by Reference for WPS 2.0";
 			Assert.assertTrue(ORRD_Flag, msg);
 		}
 	}
 
 	/**
-	 * A.5.7. Verify that each process the server offers has a unique identifier
-	 * Flow of Test Description: Get all available processes from the server under
-	 * test. Test passes if all processes have a unique identifier.
-	 * 
+	 * A.5.7. Verify that each process the server offers has a unique identifier Flow of
+	 * Test Description: Get all available processes from the server under test. Test
+	 * passes if all processes have a unique identifier.
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.7. Verify that each process the server offers has a unique identifier.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.7. Verify that each process the server offers has a unique identifier.")
 	private void ValidUniqueIdentifier() {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
@@ -426,8 +440,9 @@ req/native-process/xml-encoding/process.
 		Set<String> PNameList = new HashSet<>();
 		for (int i = 0; i < DPList.getLength(); i++) {
 			Element PDocument = (Element) DPList.item(i);
-			String PName = PDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0)
-					.getTextContent();
+			String PName = PDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier")
+				.item(0)
+				.getTextContent();
 			if (PNameList.add(PName) == false) {
 				UI_Flag = false;
 				break;
@@ -437,23 +452,23 @@ req/native-process/xml-encoding/process.
 		if (UI_Flag) {
 			String msg = "Valid Unique Identifier for WPS 2.0";
 			Assert.assertTrue(UI_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid Unique Identifier for WPS 2.0";
 			Assert.assertTrue(UI_Flag, msg);
 		}
 	}
 
 	/**
-	 * A.5.8. Verify that the server creates a unique jobID for each job Flow of
-	 * Test Description: Send more than one asynchronous Execute requests to the
-	 * server under test. Test passes if the retrieved JobIDs differ from each
-	 * other.
-	 * 
+	 * A.5.8. Verify that the server creates a unique jobID for each job Flow of Test
+	 * Description: Send more than one asynchronous Execute requests to the server under
+	 * test. Test passes if the retrieved JobIDs differ from each other.
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.8. Verify that the server creates a unique jobID for each job.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.8. Verify that the server creates a unique jobID for each job.")
 	private void ValidUniqueJobIdentifier() throws URISyntaxException, SAXException, IOException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
@@ -469,7 +484,9 @@ req/native-process/xml-encoding/process.
 			String UniqueJobIdsResponse = GetContentFromPOSTXMLRequest(SERVICE_URL, UniqueJobIdsDocument);
 			Document UniqueJobIdsResponseDocument = TransformXMLStringToXMLDocument(UniqueJobIdsResponse);
 			String JName = UniqueJobIdsResponseDocument
-					.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID").item(0).getTextContent();
+				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "JobID")
+				.item(0)
+				.getTextContent();
 			if (JNameList.add(JName) == false) {
 				UJRD_Flag = false;
 				break;
@@ -479,70 +496,72 @@ req/native-process/xml-encoding/process.
 		if (UJRD_Flag) {
 			String msg = "Valid Unique Job Ids for WPS 2.0";
 			Assert.assertTrue(UJRD_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid Unique Job Ids for WPS 2.0";
 			Assert.assertTrue(UJRD_Flag, msg);
 		}
 	}
 
 	/**
-	 * A.5.9. Verify that the server can handle GetCapabilities requests via
-	 * POST/XML Flow of Test Description: Send a valid GetCapabilities request to
-	 * the server under test. Test passes if a valid document of the type
-	 * wps:Capabilities is returned.
-	 * 
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws SAXException
+	 * A.5.9. Verify that the server can handle GetCapabilities requests via POST/XML Flow
+	 * of Test Description: Send a valid GetCapabilities request to the server under test.
+	 * Test passes if a valid document of the type wps:Capabilities is returned.
+	 * @throws java.io.IOException
+	 * @throws java.net.URISyntaxException
+	 * @throws org.xml.sax.SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.9. Verify that the server can handle GetCapabilities requests via POST/XML.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.9. Verify that the server can handle GetCapabilities requests via POST/XML.")
 	public void ValidGetCapabilitiesViaPOSTXML() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 		URI uriGetCapabilitiesRequestTemplate = BasicTests.class.getResource(GET_CAPABILITIES_REQUEST_TEMPLATE_PATH)
-				.toURI();
+			.toURI();
 		Document GCDocument = URIUtils.parseURI(uriGetCapabilitiesRequestTemplate);
 		String GCRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, GCDocument);
 		Document GCRDocument = TransformXMLStringToXMLDocument(GCRXmlString);
 
 		Boolean GCP_Flag = (GCRDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Capabilities")
-				.getLength() > 0) ? true : false;
+			.getLength() > 0) ? true : false;
 		if (GCP_Flag) {
 			String msg = "Valid GetCapabilities via POST/XML for WPS 2.0";
 			Assert.assertTrue(GCP_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid GetCapabilities via POST/XML for WPS 2.0";
 			Assert.assertTrue(GCP_Flag, msg);
 		}
 	}
 
 	/**
-	 * A.5.10. Verify that the server can handle DescribeProcess requests via
-	 * POST/XML Flow of Test Description: Send a valid DescribeProcess request to
-	 * the server under test. Test passes if a valid document of the type
-	 * wps:ProcessOfferings is returned.
-	 * 
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws SAXException
+	 * A.5.10. Verify that the server can handle DescribeProcess requests via POST/XML
+	 * Flow of Test Description: Send a valid DescribeProcess request to the server under
+	 * test. Test passes if a valid document of the type wps:ProcessOfferings is returned.
+	 * @throws java.io.IOException
+	 * @throws java.net.URISyntaxException
+	 * @throws org.xml.sax.SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.10. Verify that the server can handle DescribeProcess requests via POST/XML.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.10. Verify that the server can handle DescribeProcess requests via POST/XML.")
 	public void ValidDescribeProcessViaPOSTXML() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 		URI uriDescribeProcessRequestTemplate = BasicTests.class.getResource(DESCRIBE_PROCESS_REQUEST_TEMPLATE_PATH)
-				.toURI();
+			.toURI();
 		Document DPDocument = URIUtils.parseURI(uriDescribeProcessRequestTemplate);
-		DPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier").item(0)
-				.setTextContent(this.EchoProcessId);
+		DPDocument.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier")
+			.item(0)
+			.setTextContent(this.EchoProcessId);
 
 		String DPRXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, DPDocument);
 		Document DPRDocument = TransformXMLStringToXMLDocument(DPRXmlString);
 
 		Boolean DPP_Flag = (DPRDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOfferings")
-				.getLength() > 0) ? true : false;
+			.getLength() > 0) ? true : false;
 		if (DPP_Flag) {
 			String msg = "Valid DescribeProcess via POST/XML for WPS 2.0";
 			Assert.assertTrue(DPP_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid DescribeProcess via POST/XML for WPS 2.0";
 			Assert.assertTrue(DPP_Flag, msg);
 		}
@@ -550,20 +569,22 @@ req/native-process/xml-encoding/process.
 
 	/**
 	 * A.5.12. Verify that the server can handle the execution mode 'asynchronous'
-	 * requested via POST/XML Flow of Test Description: Flow of Test Description:
-	 * Send a valid XML Execute request to the server under test, setting the “mode”
-	 * attribute to “async”. Verify that a valid Execute wps:Result is returned.
-	 * 
-	 * @throws Exception
+	 * requested via POST/XML Flow of Test Description: Flow of Test Description: Send a
+	 * valid XML Execute request to the server under test, setting the “mode” attribute to
+	 * “async”. Verify that a valid Execute wps:Result is returned.
+	 * @throws java.lang.Exception
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.12. Verify that the server can handle the execution mode 'asynchronous' requested via POST/XML.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.12. Verify that the server can handle the execution mode 'asynchronous' requested via POST/XML.")
 	public void ValidAsyncExcecuteViaPOSTXML() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
-		Document literalDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, this.EchoProcessId, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document literalDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, this.EchoProcessId,
+				LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
 
 		// Response document
 		Element executeElement = (Element) literalDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute").item(0);
+			.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute")
+			.item(0);
 		executeElement.setAttribute("mode", "async");
 		executeElement.setAttribute("response", "document");
 
@@ -572,59 +593,62 @@ req/native-process/xml-encoding/process.
 		String VAEXmlString = GetContentFromPOSTXMLRequest(SERVICE_URL, literalDocument);
 		Document VAEDocument = TransformXMLStringToXMLDocument(VAEXmlString);
 
-		Boolean VAE_Flag = (VAEDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Status").getLength() > 0) ? true : false;
+		Boolean VAE_Flag = (VAEDocument.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Status")
+			.getLength() > 0) ? true : false;
 
 		if (VAE_Flag) {
 			String msg = "Valid AsyncExecute via POST/XML for WPS 2.0";
 			Assert.assertTrue(VAE_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid AsyncExecute via POST/XML for WPS 2.0";
 			Assert.assertTrue(VAE_Flag, msg);
 		}
 
 		/*
-		 * Code by Aries //status code is 200 response validation HttpURLConnection conn
-		 * = GetConnection(SERVICE_URL); conn.setRequestMethod("POST");
+		 * Code by Aries //status code is 200 response validation HttpURLConnection conn =
+		 * GetConnection(SERVICE_URL); conn.setRequestMethod("POST");
 		 * conn.setRequestProperty("Content-Type", "application/xml");
 		 * conn.setDoOutput(true);
-		 * 
+		 *
 		 * DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
 		 * String xml = TransformXMLDocumentToXMLString(literalDocument);
 		 * outputStream.writeBytes(xml); outputStream.flush(); outputStream.close();
-		 * 
+		 *
 		 * int responseCode = conn.getResponseCode(); StringBuilder builder = new
-		 * StringBuilder(); // read response BufferedReader in; if(responseCode > 299)
-		 * in = new BufferedReader(new InputStreamReader(conn.getErrorStream())); else
-		 * in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		 * 
+		 * StringBuilder(); // read response BufferedReader in; if(responseCode > 299) in
+		 * = new BufferedReader(new InputStreamReader(conn.getErrorStream())); else in =
+		 * new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		 *
 		 * String str; while ((str = in.readLine()) != null) { builder.append(str); }
 		 * in.close(); System.out.println(builder.toString());
-		 * 
+		 *
 		 * boolean respDocFlag = (responseCode == HttpURLConnection.HTTP_OK);
-		 * 
-		 * if (respDocFlag) { String msg =
-		 * "Valid AsyncExecute via POST/XML for WPS 2.0"; Assert.assertTrue(respDocFlag,
-		 * msg); } else { String msg = "Invalid AsyncExecute via POST/XML for WPS 2.0";
-		 * Assert.assertTrue(respDocFlag, msg); }
+		 *
+		 * if (respDocFlag) { String msg = "Valid AsyncExecute via POST/XML for WPS 2.0";
+		 * Assert.assertTrue(respDocFlag, msg); } else { String msg =
+		 * "Invalid AsyncExecute via POST/XML for WPS 2.0"; Assert.assertTrue(respDocFlag,
+		 * msg); }
 		 */
 	}
 
 	/**
-	 * A.5.13. Verify that the server can handle the execution mode 'auto' requested
-	 * via POST/XML Flow of Test Description: Flow of Test Description: Send a valid
-	 * XML Execute request to the server under test, setting the “mode” attribute to
-	 * “auto”. Verify that a valid Execute wps:Result is returned.
-	 * 
-	 * @throws Exception
+	 * A.5.13. Verify that the server can handle the execution mode 'auto' requested via
+	 * POST/XML Flow of Test Description: Flow of Test Description: Send a valid XML
+	 * Execute request to the server under test, setting the “mode” attribute to “auto”.
+	 * Verify that a valid Execute wps:Result is returned.
+	 * @throws java.lang.Exception
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.13. Verify that the server can handle the execution mode 'auto' requested via POST/XML.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.13. Verify that the server can handle the execution mode 'auto' requested via POST/XML.")
 	public void ValidAutoExcecuteViaPOSTXML() throws Exception {
 		String SERVICE_URL = this.ServiceUrl.toString();
-		
+
 		// Get the processid from user and replace the processid in the template xml
 		// request file
 		String ECHO_PROCESS_ID = this.EchoProcessId;
-		Document literalDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, ECHO_PROCESS_ID, LITERAL_INPUT_ID, LITERAL_OUTPUT_ID);
+		Document literalDocument = GetDocumentTemplate(LITERAL_REQUEST_TEMPLATE_PATH, ECHO_PROCESS_ID, LITERAL_INPUT_ID,
+				LITERAL_OUTPUT_ID);
 		prettyPrint(literalDocument);
 
 		// Parse the input id and output id in DescribeProcess
@@ -637,7 +661,8 @@ req/native-process/xml-encoding/process.
 		Document responseDescribeProcessDocument = TransformXMLStringToXMLDocument(responseDescribeProcess);
 
 		Element ProcessOfferingElement = (Element) responseDescribeProcessDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOffering").item(0);
+			.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOffering")
+			.item(0);
 		// Element ProcessOfferingElement = (Element)
 		// responseDescribeProcessDocument.getElementsByTagName("wps:ProcessOffering").item(0);
 		// System.out.println(ProcessOfferingElement.getAttribute("outputTransmission"));
@@ -645,7 +670,8 @@ req/native-process/xml-encoding/process.
 		String jobControlOptions = ProcessOfferingElement.getAttribute("jobControlOptions");
 
 		Element executeElement = (Element) literalDocument
-				.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute").item(0);
+			.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Execute")
+			.item(0);
 
 		// case 1
 		if (outputTransmission.contains("reference")) {
@@ -693,14 +719,13 @@ req/native-process/xml-encoding/process.
 	}
 
 	/**
-	 * A.5.16. Verify that the server can handle GetCapabilities requests via
-	 * GET/KVP
-	 * 
+	 * A.5.16. Verify that the server can handle GetCapabilities requests via GET/KVP
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.16. Verify that the server can handle GetCapabilities requests via GET/KVP.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.16. Verify that the server can handle GetCapabilities requests via GET/KVP.")
 	private void ValidGetCapabilitiesViaGETKVP() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
@@ -719,27 +744,27 @@ req/native-process/xml-encoding/process.
 		Document GCL_Document = TransformXMLStringToXMLDocument(GCL_XmlString);
 
 		Boolean GC_KVP_Flag = (GCU_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Capabilities")
-				.getLength() > 0
+			.getLength() > 0
 				&& GCL_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "Capabilities")
-						.getLength() > 0) ? true : false;
+					.getLength() > 0) ? true : false;
 		if (GC_KVP_Flag) {
 			String msg = "Valid GetCapabilities via KVP for WPS 2.0";
 			Assert.assertTrue(GC_KVP_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid GetCapabilities via KVP for WPS 2.0";
 			Assert.assertTrue(GC_KVP_Flag, msg);
 		}
 	}
 
 	/**
-	 * A.5.17. Verify that the server can handle DescribeProcess requests via
-	 * GET/KVP
-	 * 
+	 * A.5.17. Verify that the server can handle DescribeProcess requests via GET/KVP
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws SAXException
 	 */
-	@Test(enabled = true, groups = "A.5. Basic Tests", description = "A.5.17. Verify that the server can handle DescribeProcess requests via GET/KVP.")
+	@Test(enabled = true, groups = "A.5. Basic Tests",
+			description = "A.5.17. Verify that the server can handle DescribeProcess requests via GET/KVP.")
 	private void ValidDescribeProcessViaGETKVP() throws IOException, URISyntaxException, SAXException {
 		String SERVICE_URL = this.ServiceUrl.toString();
 
@@ -750,7 +775,8 @@ req/native-process/xml-encoding/process.
 		String GC_XmlString = GetContentFromGETKVPRequest(SERVICE_URL, GC_Parameters);
 		Document GC_Document = TransformXMLStringToXMLDocument(GC_XmlString);
 		String IdentifierName = GC_Document.getElementsByTagNameNS("http://www.opengis.net/ows/2.0", "Identifier")
-				.item(0).getTextContent();
+			.item(0)
+			.getTextContent();
 
 		Map<String, Object> DPU_Parameters = new LinkedHashMap<>();
 		DPU_Parameters.put("Service".toUpperCase(), "WPS");
@@ -769,18 +795,28 @@ req/native-process/xml-encoding/process.
 		Document DPL_Document = TransformXMLStringToXMLDocument(DPL_XmlString);
 
 		Boolean DP_KVP_Flag = (DPU_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOfferings")
-				.getLength() > 0
+			.getLength() > 0
 				&& DPL_Document.getElementsByTagNameNS("http://www.opengis.net/wps/2.0", "ProcessOfferings")
-						.getLength() > 0) ? true : false;
+					.getLength() > 0) ? true : false;
 		if (DP_KVP_Flag) {
 			String msg = "Valid DescribeProcess via KVP for WPS 2.0";
 			Assert.assertTrue(DP_KVP_Flag, msg);
-		} else {
+		}
+		else {
 			String msg = "Invalid DescribeProcess via KVP for WPS 2.0";
 			Assert.assertTrue(DP_KVP_Flag, msg);
 		}
 	}
-	
+
+	/**
+	 * <p>
+	 * TestPostWithDocumentAndAssertMessage.
+	 * </p>
+	 * @param SERVICE_URL a {@link java.lang.String} object
+	 * @param literalDocument a {@link org.w3c.dom.Document} object
+	 * @param message a {@link java.lang.String} object
+	 * @throws java.lang.Exception if any.
+	 */
 	public void TestPostWithDocumentAndAssertMessage(String SERVICE_URL, Document literalDocument, String message)
 			throws Exception {
 		// status code is 200 response validation
@@ -802,7 +838,6 @@ req/native-process/xml-encoding/process.
 
 	/**
 	 * Description: Identify that a XML document is valid with XSD Template or not
-	 * 
 	 * @param xmlString
 	 * @param xsdPath
 	 * @return
@@ -812,21 +847,16 @@ req/native-process/xml-encoding/process.
 			Schema schema = ValidationUtils.createSchema(xsdPath);
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(new StringReader(xmlString)));
-		} catch (IOException | SAXException e) {
+		}
+		catch (IOException | SAXException e) {
 			System.out.println("Exception: " + e.getMessage());
 			return false;
 		}
 		return true;
 	}
 
-
-
-
-
-
 	/**
 	 * Description: Identify that URL could get the response or not
-	 * 
 	 * @param any_url
 	 * @return
 	 * @throws IOException
@@ -846,7 +876,5 @@ req/native-process/xml-encoding/process.
 		int responseCode = huc.getResponseCode();
 		return (responseCode != HttpURLConnection.HTTP_OK) ? false : true;
 	}
-
-
 
 }
